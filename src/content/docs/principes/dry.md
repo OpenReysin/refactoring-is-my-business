@@ -1,75 +1,80 @@
 ---
 title: DRY - Don't Repeat Yourself
-description: Éviter la duplication de code et de logique
+description: Avoiding Code and Logic Duplication
 ---
 
-> *"Chaque connaissance doit avoir une représentation unique, non ambiguë et faisant autorité dans un système"* - Andy Hunt & Dave Thomas
+> *"Every piece of knowledge must have a single, unambiguous, authoritative representation within a system."* — Andy Hunt & Dave Thomas
 
-## Qu'est-ce que DRY ?
+---
 
-Le principe DRY nous encourage à éviter la duplication dans notre code. Cela concerne :
+## What Is DRY?
 
-- **Le code** - Éviter de copier-coller du code identique
-- **La logique métier** - Une règle = un seul endroit
-- **Les données** - Configuration centralisée
-- **La documentation** - Éviter les redondances
+The DRY principle encourages us to avoid duplication in our code. This applies to:
+- **Code** — Avoid copying and pasting identical code
+- **Business Logic** — One rule = one place
+- **Data** — Centralized configuration
+- **Documentation** — Avoid redundancies
 
-## Pourquoi DRY est important ?
+---
 
-### 🐛 **Moins de bugs**
-Un bug corrigé à un endroit = corrigé partout
+## Why Is DRY Important?
 
-### 🔧 **Maintenance facile**
-Une modification = un seul endroit à changer
+### 🐛 **Fewer Bugs**
+A bug fixed in one place = fixed everywhere
 
-### 📖 **Code plus lisible**
-Moins de duplication = focus sur l'essentiel
+### 🔧 **Easier Maintenance**
+One change = one place to modify
 
-## ❌ Exemples de violations DRY
+### 📖 **More Readable Code**
+Less duplication = focus on what matters
 
-### Duplication de code
+---
+
+## ❌ Examples of DRY Violations
+
+### Code Duplication
 
 ```javascript
-// ❌ Code dupliqué
+// ❌ Duplicated code
 function validateUser(user) {
   if (!user.name || user.name.length < 2) {
-    throw new Error('Le nom doit faire au moins 2 caractères');
+    throw new Error('Name must be at least 2 characters long');
   }
   if (!user.email || !user.email.includes('@')) {
-    throw new Error('Email invalide');
+    throw new Error('Invalid email');
   }
   if (!user.age || user.age < 18 || user.age > 120) {
-    throw new Error('Âge doit être entre 18 et 120 ans');
+    throw new Error('Age must be between 18 and 120');
   }
 }
 
 function validateAdmin(admin) {
   if (!admin.name || admin.name.length < 2) {
-    throw new Error('Le nom doit faire au moins 2 caractères');
+    throw new Error('Name must be at least 2 characters long');
   }
   if (!admin.email || !admin.email.includes('@')) {
-    throw new Error('Email invalide');
+    throw new Error('Invalid email');
   }
   if (!admin.age || admin.age < 18 || admin.age > 120) {
-    throw new Error('Âge doit être entre 18 et 120 ans');
+    throw new Error('Age must be between 18 and 120');
   }
   if (!admin.permissions || admin.permissions.length === 0) {
-    throw new Error('Un admin doit avoir des permissions');
+    throw new Error('An admin must have permissions');
   }
 }
 ```
 
-### Duplication de logique métier
+### Business Logic Duplication
 
 ```javascript
-// ❌ Calcul du prix dupliqué
+// ❌ Duplicated price calculation
 class Product {
   calculatePrice() {
     let price = this.basePrice;
     if (this.category === 'electronics') {
-      price = price * 1.2; // TVA 20%
+      price = price * 1.2; // 20% VAT
     } else if (this.category === 'books') {
-      price = price * 1.055; // TVA 5.5%
+      price = price * 1.055; // 5.5% VAT
     }
     return price;
   }
@@ -79,37 +84,39 @@ class CartItem {
   calculateTotalPrice() {
     let price = this.product.basePrice * this.quantity;
     if (this.product.category === 'electronics') {
-      price = price * 1.2; // TVA 20% - DUPLIQUÉ !
+      price = price * 1.2; // 20% VAT — DUPLICATED!
     } else if (this.product.category === 'books') {
-      price = price * 1.055; // TVA 5.5% - DUPLIQUÉ !
+      price = price * 1.055; // 5.5% VAT — DUPLICATED!
     }
     return price;
   }
 }
 ```
 
-## ✅ Solutions DRY
+---
 
-### 1. Extraire les fonctions communes
+## ✅ DRY Solutions
+
+### 1. Extract Common Functions
 
 ```javascript
-// ✅ Validation centralisée
+// ✅ Centralized validation
 class Validator {
   static validateName(name) {
     if (!name || name.length < 2) {
-      throw new Error('Le nom doit faire au moins 2 caractères');
+      throw new Error('Name must be at least 2 characters long');
     }
   }
-  
+
   static validateEmail(email) {
     if (!email || !email.includes('@')) {
-      throw new Error('Email invalide');
+      throw new Error('Invalid email');
     }
   }
-  
+
   static validateAge(age) {
     if (!age || age < 18 || age > 120) {
-      throw new Error('Âge doit être entre 18 et 120 ans');
+      throw new Error('Age must be between 18 and 120');
     }
   }
 }
@@ -121,30 +128,30 @@ function validateUser(user) {
 }
 
 function validateAdmin(admin) {
-  validateUser(admin); // Réutilise la validation de base
-  
+  validateUser(admin); // Reuse base validation
+
   if (!admin.permissions || admin.permissions.length === 0) {
-    throw new Error('Un admin doit avoir des permissions');
+    throw new Error('An admin must have permissions');
   }
 }
 ```
 
-### 2. Centraliser la logique métier
+### 2. Centralize Business Logic
 
 ```javascript
-// ✅ Logique de TVA centralisée
+// ✅ Centralized VAT logic
 class TaxCalculator {
   static TAX_RATES = {
     electronics: 0.20,
     books: 0.055,
     default: 0.20
   };
-  
+
   static calculateTax(category, basePrice) {
     const rate = this.TAX_RATES[category] || this.TAX_RATES.default;
     return basePrice * rate;
   }
-  
+
   static calculatePriceWithTax(category, basePrice) {
     const tax = this.calculateTax(category, basePrice);
     return basePrice + tax;
@@ -160,7 +167,7 @@ class Product {
 class CartItem {
   calculateTotalPrice() {
     const unitPrice = TaxCalculator.calculatePriceWithTax(
-      this.product.category, 
+      this.product.category,
       this.product.basePrice
     );
     return unitPrice * this.quantity;
@@ -168,10 +175,10 @@ class CartItem {
 }
 ```
 
-### 3. Configuration centralisée
+### 3. Centralized Configuration
 
 ```javascript
-// ❌ Configuration dispersée
+// ❌ Scattered configuration
 const API_ENDPOINTS = {
   users: 'https://api.example.com/users',
   products: 'https://api.example.com/products',
@@ -190,7 +197,7 @@ const UI_CONSTANTS = {
   maxItemsPerPage: 20
 };
 
-// ✅ Configuration centralisée
+// ✅ Centralized configuration
 class Config {
   static API = {
     BASE_URL: 'https://api.example.com',
@@ -200,13 +207,13 @@ class Config {
       orders: '/orders'
     }
   };
-  
+
   static VALIDATION = {
     name: { min: 2, max: 50 },
     age: { min: 18, max: 120 },
     email: { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ }
   };
-  
+
   static UI = {
     colors: {
       primary: '#007bff',
@@ -221,20 +228,22 @@ class Config {
 }
 ```
 
-## DRY avec Vue.js
+---
 
-### Composables réutilisables
+## DRY with Vue.js
+
+### Reusable Composables
 
 ```javascript
-// ✅ Logique métier réutilisable
+// ✅ Reusable business logic
 export function useApi(baseUrl) {
   const loading = ref(false);
   const error = ref(null);
-  
+
   const request = async (endpoint, options = {}) => {
     loading.value = true;
     error.value = null;
-    
+
     try {
       const response = await fetch(`${baseUrl}${endpoint}`, {
         headers: {
@@ -243,11 +252,11 @@ export function useApi(baseUrl) {
         },
         ...options
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      
+
       return await response.json();
     } catch (err) {
       error.value = err.message;
@@ -256,56 +265,56 @@ export function useApi(baseUrl) {
       loading.value = false;
     }
   };
-  
+
   return { loading: readonly(loading), error: readonly(error), request };
 }
 
-// Usage dans différents composants
+// Usage in different components
 export function useUsers() {
   const { loading, error, request } = useApi('/api');
-  
+
   const getUsers = () => request('/users');
   const createUser = (userData) => request('/users', {
     method: 'POST',
     body: JSON.stringify(userData)
   });
-  
+
   return { loading, error, getUsers, createUser };
 }
 
 export function useProducts() {
   const { loading, error, request } = useApi('/api');
-  
+
   const getProducts = () => request('/products');
   const createProduct = (productData) => request('/products', {
     method: 'POST',
     body: JSON.stringify(productData)
   });
-  
+
   return { loading, error, getProducts, createProduct };
 }
 ```
 
-### Composants génériques
+### Generic Components
 
 ```javascript
-// ✅ Composant de liste générique
+// ✅ Generic list component
 const GenericList = {
   props: {
     items: Array,
     itemComponent: String,
     loading: Boolean,
     error: String,
-    emptyMessage: { type: String, default: 'Aucun élément trouvé' }
+    emptyMessage: { type: String, default: 'No items found' }
   },
   template: `
     <div class="generic-list">
-      <div v-if="loading" class="loading">Chargement...</div>
+      <div v-if="loading" class="loading">Loading...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
       <div v-else-if="items.length === 0" class="empty">{{ emptyMessage }}</div>
       <div v-else class="items">
-        <component 
-          v-for="item in items" 
+        <component
+          v-for="item in items"
           :key="item.id"
           :is="itemComponent"
           :item="item"
@@ -315,7 +324,7 @@ const GenericList = {
   `
 };
 
-// Composants spécifiques
+// Specific components
 const UserItem = {
   props: ['item'],
   template: `<div class="user-item">{{ item.name }} - {{ item.email }}</div>`
@@ -330,21 +339,21 @@ const ProductItem = {
 const UserList = {
   components: { GenericList, UserItem },
   template: `
-    <GenericList 
+    <GenericList
       :items="users"
       :loading="loading"
       :error="error"
       item-component="UserItem"
-      empty-message="Aucun utilisateur trouvé"
+      empty-message="No users found"
     />
   `
 };
 ```
 
-### Utilitaires partagés
+### Shared Utilities
 
 ```javascript
-// ✅ Utilitaires réutilisables
+// ✅ Reusable utilities
 export const formatters = {
   currency: (amount, currency = 'EUR') => {
     return new Intl.NumberFormat('fr-FR', {
@@ -352,7 +361,7 @@ export const formatters = {
       currency
     }).format(amount);
   },
-  
+
   date: (date, options = {}) => {
     return new Intl.DateTimeFormat('fr-FR', {
       year: 'numeric',
@@ -361,7 +370,7 @@ export const formatters = {
       ...options
     }).format(new Date(date));
   },
-  
+
   truncate: (text, maxLength = 100) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
@@ -369,70 +378,72 @@ export const formatters = {
 };
 
 export const validators = {
-  required: (value) => !!value || 'Ce champ est requis',
+  required: (value) => !!value || 'This field is required',
   email: (value) => {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(value) || 'Email invalide';
+    return pattern.test(value) || 'Invalid email';
   },
-  minLength: (min) => (value) => 
-    value.length >= min || `Minimum ${min} caractères`,
-  maxLength: (max) => (value) => 
-    value.length <= max || `Maximum ${max} caractères`
+  minLength: (min) => (value) =>
+    value.length >= min || `Minimum ${min} characters`,
+  maxLength: (max) => (value) =>
+    value.length <= max || `Maximum ${max} characters`
 };
 ```
 
-## ⚠️ Attention aux excès de DRY
+---
 
-### Fausse abstraction
+## ⚠️ Beware of Over-DRYing
+
+### False Abstraction
 
 ```javascript
-// ❌ Abstraction prématurée
+// ❌ Premature abstraction
 function processData(data, type) {
   if (type === 'user') {
     return data.map(item => ({ id: item.id, name: item.fullName }));
   } else if (type === 'product') {
     return data.map(item => ({ id: item.id, name: item.title }));
   } else if (type === 'order') {
-    return data.map(item => ({ id: item.id, name: `Commande ${item.number}` }));
+    return data.map(item => ({ id: item.id, name: `Order ${item.number}` }));
   }
-  // Cette fonction fait trop de choses différentes !
+  // This function does too many different things!
 }
 
-// ✅ Fonctions spécialisées
-const transformUsers = (users) => 
+// ✅ Specialized functions
+const transformUsers = (users) =>
   users.map(user => ({ id: user.id, name: user.fullName }));
 
-const transformProducts = (products) => 
+const transformProducts = (products) =>
   products.map(product => ({ id: product.id, name: product.title }));
 
-const transformOrders = (orders) => 
-  orders.map(order => ({ id: order.id, name: `Commande ${order.number}` }));
+const transformOrders = (orders) =>
+  orders.map(order => ({ id: order.id, name: `Order ${order.number}` }));
 ```
 
-### Couplage excessif
+### Excessive Coupling
 
 ```javascript
-// ❌ Couplage par réutilisation forcée
+// ❌ Forced reuse coupling
 function validateAndSaveUser(userData, saveToDatabase = true, sendEmail = true) {
   // Validation
-  if (!userData.email) throw new Error('Email requis');
-  
-  // Sauvegarde optionnelle
+  if (!userData.email) throw new Error('Email required');
+
+  // Optional save
   if (saveToDatabase) {
     database.save(userData);
   }
-  
-  // Email optionnel
+
+  // Optional email
   if (sendEmail) {
-    emailService.send(userData.email, 'Bienvenue');
+    emailService.send(userData.email, 'Welcome');
   }
-  
+
   return userData;
 }
 
-// ✅ Responsabilités séparées
+// ✅ Separated responsibilities
 function validateUser(userData) {
-  if (!userData.email) throw new Error('Email requis');
+  if (!userData.email) throw new Error('Email required');
   return userData;
 }
 
@@ -441,10 +452,10 @@ function saveUser(userData) {
 }
 
 function sendWelcomeEmail(userData) {
-  return emailService.send(userData.email, 'Bienvenue');
+  return emailService.send(userData.email, 'Welcome');
 }
 
-// Composition à l'usage
+// Compose at usage
 async function createUser(userData) {
   const validUser = validateUser(userData);
   const savedUser = await saveUser(validUser);
@@ -453,53 +464,56 @@ async function createUser(userData) {
 }
 ```
 
-## Stratégies pour appliquer DRY
+---
 
-### 1. **Règle des 3**
-Avant d'abstraire, attendez d'avoir 3 occurrences similaires
+## Strategies for Applying DRY
 
-### 2. **Identifier les vrais duplicatas**
+### 1. **Rule of Three**
+Wait until you have three similar occurrences before abstracting.
+
+### 2. **Identify True Duplicates**
 ```javascript
-// Similaire mais pas identique - ne pas forcer DRY
+// Similar but not identical — don't force DRY
 const validateUserEmail = (email) => email.includes('@');
 const validateAdminEmail = (email) => email.includes('@') && email.includes('.com');
 ```
 
-### 3. **Commencer petit**
+### 3. **Start Small**
 ```javascript
-// ✅ Commencer par extraire des constantes
+// ✅ Start by extracting constants
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_LOGIN_ATTEMPTS = 3;
 
-// Puis des fonctions utilitaires
+// Then utility functions
 const isValidPassword = (password) => password.length >= MIN_PASSWORD_LENGTH;
 
-// Enfin des abstractions plus complexes
+// Finally, more complex abstractions
 class AuthService {
   // ...
 }
 ```
 
-## Récapitulatif
-
-### ✅ **Appliquer DRY pour :**
-- Code identique copié-collé
-- Logique métier répétée
-- Configuration dispersée
-- Validation redondante
-
-### ❌ **Éviter DRY quand :**
-- Le code est similaire mais pas identique
-- L'abstraction créerait plus de complexité
-- Il n'y a que 2 occurrences
-- Les contextes d'usage sont très différents
-
-### 🎯 **Conseils pratiques :**
-- **Attendez** d'avoir plusieurs duplicatas avant d'abstraire
-- **Nommez bien** vos abstractions
-- **Testez** séparément chaque abstraction
-- **Documentez** l'intention derrière l'abstraction
-
 ---
 
-> *DRY est un outil puissant, mais comme tout outil, il doit être utilisé au bon moment et de la bonne façon !*
+## Summary
+
+### ✅ **Apply DRY for:**
+- Identical copied-and-pasted code
+- Repeated business logic
+- Scattered configuration
+- Redundant validation
+
+### ❌ **Avoid DRY when:**
+- Code is similar but not identical
+- Abstraction would create more complexity
+- There are only two occurrences
+- Usage contexts are very different
+
+### 🎯 **Practical Tips:**
+- **Wait** until you have multiple duplicates before abstracting
+- **Name** your abstractions well
+- **Test** each abstraction separately
+- **Document** the intention behind the abstraction
+
+---
+> *DRY is a powerful tool, but like any tool, it must be used at the right time and in the right way!*

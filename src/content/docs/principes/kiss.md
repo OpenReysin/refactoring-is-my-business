@@ -1,75 +1,79 @@
-
 ---
 title: KISS - Keep It Simple, Stupid
-description: Le principe de simplicité en développement logiciel
+description: The Principle of Simplicity in Software Development
 ---
 
-> *"La simplicité est la sophistication ultime"* - Leonardo da Vinci
+> *"Simplicity is the ultimate sophistication."* — Leonardo da Vinci
 
-## Qu'est-ce que le principe KISS ?
+---
 
-KISS est l'un des principes les plus importants en développement logiciel. Il nous encourage à privilégier les solutions simples plutôt que les solutions complexes. Un code simple est plus facile à :
+## What Is the KISS Principle?
 
-- **Comprendre** - Pour vous et vos collègues
-- **Maintenir** - Moins de bugs, modifications plus faciles
-- **Tester** - Moins de cas de test complexes
-- **Déboguer** - Les problèmes sont plus faciles à localiser
+KISS is one of the most important principles in software development. It encourages us to prefer simple solutions over complex ones. Simple code is easier to:
+- **Understand** — For you and your colleagues
+- **Maintain** — Fewer bugs, easier modifications
+- **Test** — Fewer complex test cases
+- **Debug** — Problems are easier to locate
 
-## ❌ Exemple de code complexe
+---
+
+## ❌ Example of Complex Code
 
 ```javascript
-// Version complexe - À éviter !
+// Complex version — Avoid!
 function processUserDataWithAdvancedValidationAndTransformation(userData) {
   const validationRules = {
     name: (val) => val && val.length > 0 && val.length < 50 && /^[a-zA-Z\s]*$/.test(val),
     email: (val) => val && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
     age: (val) => val && !isNaN(val) && val > 0 && val < 150
   };
-  
+
   const transformationRules = {
-    name: (val) => val.trim().toLowerCase().split(' ').map(word => 
+    name: (val) => val.trim().toLowerCase().split(' ').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
     email: (val) => val.trim().toLowerCase(),
     age: (val) => parseInt(val, 10)
   };
-  
+
   const errors = [];
   const processedData = {};
-  
+
   Object.keys(userData).forEach(key => {
     if (validationRules[key]) {
       if (!validationRules[key](userData[key])) {
         errors.push(`Invalid ${key}`);
       } else {
-        processedData[key] = transformationRules[key] ? 
+        processedData[key] = transformationRules[key] ?
           transformationRules[key](userData[key]) : userData[key];
       }
     }
   });
-  
+
   return errors.length > 0 ? { errors } : { data: processedData };
 }
 ```
 
-## ✅ Exemple de code simple
+---
+
+## ✅ Example of Simple Code
 
 ```javascript
-// Version simple - Beaucoup mieux !
+// Simple version — Much better!
 function validateUser(userData) {
   const errors = [];
-  
+
   if (!isValidName(userData.name)) {
-    errors.push('Nom invalide');
+    errors.push('Invalid name');
   }
-  
+
   if (!isValidEmail(userData.email)) {
-    errors.push('Email invalide');
+    errors.push('Invalid email');
   }
-  
+
   if (!isValidAge(userData.age)) {
-    errors.push('Âge invalide');
+    errors.push('Invalid age');
   }
-  
+
   return errors;
 }
 
@@ -102,16 +106,18 @@ function formatEmail(email) {
 }
 ```
 
-## Avantages de la version simple
+---
 
-### 🔍 **Plus lisible**
-Chaque fonction a un rôle précis et un nom explicite.
+## Benefits of the Simple Version
 
-### 🧪 **Plus testable**
-Vous pouvez tester chaque fonction indépendamment :
+### 🔍 **More Readable**
+Each function has a specific role and an explicit name.
+
+### 🧪 **More Testable**
+You can test each function independently:
 
 ```javascript
-// Tests simples et clairs
+// Simple and clear tests
 test('isValidEmail should return true for valid email', () => {
   expect(isValidEmail('user@example.com')).toBe(true);
 });
@@ -121,28 +127,32 @@ test('formatName should trim spaces', () => {
 });
 ```
 
-### 🔧 **Plus maintenable**
-Besoin de changer la validation d'email ? Modifiez seulement `isValidEmail()`.
+### 🔧 **More Maintainable**
+Need to change email validation? Only modify `isValidEmail()`.
 
-## Comment appliquer KISS ?
+---
 
-### 1. **Une fonction = Une responsabilité**
+## How to Apply KISS?
+
+### 1. **One Function = One Responsibility**
+
 ```javascript
-// ❌ Fonction qui fait tout
+// ❌ Function that does everything
 function processOrder(order) {
-  // validation + calcul + sauvegarde + email
+  // validation + calculation + saving + email
 }
 
-// ✅ Fonctions spécialisées  
+// ✅ Specialized functions
 function validateOrder(order) { /* ... */ }
 function calculateTotal(order) { /* ... */ }
 function saveOrder(order) { /* ... */ }
 function sendConfirmationEmail(order) { /* ... */ }
 ```
 
-### 2. **Évitez les abstractions prématurées**
+### 2. **Avoid Premature Abstractions**
+
 ```javascript
-// ❌ Trop abstrait pour un cas simple
+// ❌ Too abstract for a simple case
 class DataProcessor {
   constructor(strategy) {
     this.strategy = strategy;
@@ -152,32 +162,36 @@ class DataProcessor {
   }
 }
 
-// ✅ Simple et direct
+// ✅ Simple and direct
 function processUserData(data) {
   return data.filter(user => user.active)
              .map(user => user.name);
 }
 ```
 
-### 3. **Noms explicites > Commentaires**
+### 3. **Explicit Names > Comments**
+
 ```javascript
-// ❌ Code qui nécessite des commentaires
-function calc(u, r) { // calcule le prix avec remise
-  return u * r * 0.9; // applique 10% de remise
+// ❌ Code that requires comments
+function calc(u, r) { // calculates price with discount
+  return u * r * 0.9; // applies 10% discount
 }
 
-// ✅ Code auto-documenté
+// ✅ Self-documenting code
 function calculatePriceWithDiscount(unitPrice, quantity) {
   const DISCOUNT_RATE = 0.9;
   return unitPrice * quantity * DISCOUNT_RATE;
 }
 ```
 
-## Cas d'usage concrets
+---
 
-### Gestion d'état simple
+## Concrete Use Cases
+
+### Simple State Management
+
 ```javascript
-// ❌ Store complexe pour une todo list
+// ❌ Complex store for a todo list
 const store = new Vuex.Store({
   modules: {
     todos: {
@@ -190,7 +204,7 @@ const store = new Vuex.Store({
   }
 });
 
-// ✅ État local simple
+// ✅ Simple local state
 const todos = ref([]);
 const addTodo = (text) => todos.value.push({ id: Date.now(), text, done: false });
 const toggleTodo = (id) => {
@@ -199,28 +213,31 @@ const toggleTodo = (id) => {
 };
 ```
 
-## ⚠️ Quand KISS peut être mal interprété
+---
 
-KISS ne signifie pas :
+## ⚠️ When KISS Can Be Misinterpreted
 
-### ❌ **"Ne jamais abstraire"**
+KISS does **not** mean:
+
+### ❌ **"Never Abstract"**
+
 ```javascript
-// Répétition acceptable au début
+// Acceptable repetition at first
 function getUserById(id) { return fetch(`/users/${id}`); }
 function getPostById(id) { return fetch(`/posts/${id}`); }
-
-// Mais quand le pattern se répète, abstraire devient simple
-function getResourceById(resource, id) { 
-  return fetch(`/${resource}/${id}`); 
+// But when the pattern repeats, abstraction becomes simple
+function getResourceById(resource, id) {
+  return fetch(`/${resource}/${id}`);
 }
 ```
 
-### ❌ **"Ignorer les bonnes pratiques"**
-```javascript
-// ❌ Trop simple = dangereux
-let user = JSON.parse(response); // Peut planter
+### ❌ **"Ignore Best Practices"**
 
-// ✅ Simple mais sûr  
+```javascript
+// ❌ Too simple = dangerous
+let user = JSON.parse(response); // Can crash
+
+// ✅ Simple but safe
 let user;
 try {
   user = JSON.parse(response);
@@ -229,19 +246,20 @@ try {
 }
 ```
 
-## Récapitulatif
-
-### ✅ **Appliquer KISS c'est :**
-- Écrire du code que vous comprendrez dans 6 mois
-- Privilégier plusieurs petites fonctions à une grosse
-- Choisir des noms de variables explicites
-- Éviter les solutions "cleverness" au profit de la clarté
-
-### ❌ **KISS ce n'est pas :**
-- Éviter toute abstraction
-- Ignorer les patterns utiles
-- Écrire du code non sécurisé
-
 ---
 
-> *La simplicité demande plus de travail au début, mais fait gagner énormément de temps sur le long terme !*
+## Summary
+
+### ✅ **Applying KISS Means:**
+- Writing code you'll understand in 6 months
+- Preferring multiple small functions over one big function
+- Choosing explicit variable names
+- Avoiding "clever" solutions in favor of clarity
+
+### ❌ **KISS Does Not Mean:**
+- Avoiding all abstraction
+- Ignoring useful patterns
+- Writing insecure code
+
+---
+> *Simplicity requires more work upfront but saves a tremendous amount of time in the long run!*
