@@ -30,29 +30,29 @@ export default defineConfig({
                             translations: {
                                 fr: 'Principes de Développement',
                             },
-                            slug: 'principes'
+                            slug: 'principles'
                         },
                         {
                             label: 'KISS, Keep it simple, stupid!',
-                            slug:  'principes/kiss'
+                            slug:  'principles/kiss'
                         },
                         {
                             label: 'SOLID, 5 Principles OOP',
                             translations:  {
                                 fr: 'SOLID, 5 Principes POO'
                             },
-                            slug:  'principes/solid'
+                            slug:  'principles/solid'
                         },
                         {
                             label: 'DRY, Don\'t Repeat Yourself',
-                            slug:  'principes/dry'
+                            slug:  'principles/dry'
                         },
                         {
                             label: 'Law of Demeter',
                             translations:  {
                                 fr: 'Loi de Déméter'
                             },
-                            slug:  'principes/demeter'
+                            slug:  'principles/demeter'
                         },
                     ]
                 },
