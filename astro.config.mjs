@@ -78,9 +78,9 @@ export default defineConfig({
 							label: "Creational Patterns",
 							items: [
 								{
-									label: "Creational Patterns",
+									label: "Creational Patterns Overview",
 									translations: {
-										fr: "Design Patterns Créationnels",
+										fr: "Apperçu des Creational Patterns",
 									},
 									slug: "design-patterns/creational",
 								},
@@ -105,7 +105,6 @@ export default defineConfig({
 					lang: "fr",
 				},
 			},
-			plugins: [ion()],
 		}),
 	],
 });
