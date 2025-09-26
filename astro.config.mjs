@@ -2,10 +2,10 @@
 
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
-import { ion } from "starlight-ion-theme";
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://refactoring-is-my-business.com',
 	integrations: [
 		starlight({
 			title: "Refactoring Is My Business",
