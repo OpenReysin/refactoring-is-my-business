@@ -1,5 +1,30 @@
-# The best comment is a good name
+Here’s a revamped version of your Design Patterns pages in **English**, using **Starlight components** and **MDX** syntax. This structure is optimized for Astro Starlight and includes interactive elements like tabs, callouts, and code blocks.
 
-Comments are usually created with the best of intentions, when the author realizes that his or her code isn’t intuitive or obvious. In such cases, comments are like a deodorant masking the smell of fishy code that could be improved.
+---
 
-If you feel that a code fragment can’t be understood without comments, try to change the code structure in a way that makes comments unnecessary.
+### 1. Homepage: `/design-patterns.mdx`
+```mdx
+
+
+---
+
+## Resources
+
+- [Book: Design Patterns - Elements of Reusable Object-Oriented Software](https://example.com)
+- [Refactoring.Guru - Design Patterns](https://refactoring.guru/design-patterns)
+```
+
+---
+
+### 2. Creational Patterns Page: `/design-patterns/creational.mdx`
+```mdx
+
+```
+
+---
+
+### Key Features of This Structure:
+1. **MDX Syntax**: Supports interactive components like `<Tabs>`, `<Callout>`, and code blocks.
+2. **Starlight Compatibility**: Uses Starlight’s built-in components for tables, callouts, and tabs.
+3. **Clear Organization**: Separates theory, examples, and use cases for better readability.
+4. **Multilingual Code Examples**: Provides examples in TypeScript and Python.

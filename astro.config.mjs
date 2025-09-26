@@ -56,6 +56,38 @@ export default defineConfig({
                         },
                     ]
                 },
+                {
+                    label: 'Design Patterns',
+                    translations: {
+                        fr: 'Design Patterns',
+                    },
+                    items: [
+                        {
+                            label: 'Design Patterns Overview',
+                            translations: {
+                                fr: 'Aperçu des Design Patterns',
+                            },
+                            slug: 'design-patterns'
+                        },
+                        {
+                            label: 'Creational Patterns',
+                            items: [
+                                {
+                                    label: 'Creational Patterns',
+                                    translations: {
+                                        fr: 'Design Patterns Créationnels',
+                                    },
+                                    slug: 'design-patterns/creational'
+                                },
+                                {
+                                    label: 'Singleton',
+                                    slug: 'design-patterns/creational/singleton'
+                                }
+                            ]
+                        },
+                    ]
+
+                }
             ],
             defaultLocale: 'root',
             locales: {
