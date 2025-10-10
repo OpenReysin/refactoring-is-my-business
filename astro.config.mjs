@@ -4,19 +4,10 @@ import starlight from "@astrojs/starlight";
 import {defineConfig} from "astro/config";
 import starlightThemeRapide from "starlight-theme-rapide";
 
-import node from "@astrojs/node";
-
 // https://astro.build/config
 export default defineConfig({
     site: 'https://refactoring-is-my-business.com',
-    output: "server",
-    server: {
-        host: true, // This makes it listen on 0.0.0.0
-        port: 4321
-    },
-    adapter: node({
-        mode: "standalone",
-    }),
+    output: "static",
 
     integrations: [
         starlight({
