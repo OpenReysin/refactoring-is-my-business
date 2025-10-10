@@ -1,0 +1,395 @@
+---
+title: "Singleton - A Design Pattern for Single Instance Management"
+description: "Understand the Singleton pattern, its use cases, pitfalls, and how to implement it in TypeScript, Vue.js, Java, PHP, and Rust."
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+# Singleton: Ensuring a Single Instance
+
+The **Singleton** is a **creational design pattern** that ensures a class has only **one instance** and provides a global point of access to it. It is widely used for managing shared resources like configurations, database connections, or logging services.
+
+---
+
+## What is the Singleton Pattern?
+
+The Singleton pattern restricts the instantiation of a class to a single instance and provides a global point of access to it. This is useful when exactly one object is needed to coordinate actions across the system.
+
+---
+
+## Why Use a Singleton?
+
+### Common Use Cases
+<CardGrid>
+  <Card title="Configuration Management" icon="settings">
+    A single source of truth for application settings.
+  </Card>
+  <Card title="Database Connection" icon="database">
+    A single connection instance to prevent resource leaks.
+  </Card>
+  <Card title="Shared Cache" icon="memory">
+    Avoid data duplication in memory.
+  </Card>
+  <Card title="Centralized Logging" icon="log">
+    A single logger for the entire application.
+  </Card>
+</CardGrid>
+
+### Advantages and Disadvantages
+| Advantages ✅ | Disadvantages ❌ |
+|--------------|----------------|
+| Strict control over instantiation. | Hard to test (shared global state). |
+| Global access to the unique instance. | Can introduce hidden dependencies. |
+| Resource efficiency (e.g., a single database connection). | Thread safety issues if poorly implemented. |
+
+---
+
+## Thread Safety: A Pitfall to Avoid
+
+A **non-thread-safe** Singleton can create multiple instances if two threads instantiate it simultaneously. While JavaScript/TypeScript is single-threaded, understanding best practices is crucial for asynchronous environments.
+
+### Solutions for Thread Safety
+
+<Tabs>
+  <TabItem label="Lazy Initialization">
+    ```typescript
+    class Singleton {
+      private static instance: Singleton | null = null;
+      private constructor() {}
+      public static getInstance(): Singleton {
+        if (!Singleton.instance) {
+          Singleton.instance = new Singleton();
+        }
+        return Singleton.instance;
+      }
+    }
+    ```
+    ✅ **Simple and effective** in single-threaded environments.
+  </TabItem>
+
+  <TabItem label="Eager Initialization">
+    ```typescript
+    class Singleton {
+      private static instance: Singleton = new Singleton();
+      private constructor() {}
+      public static getInstance(): Singleton {
+        return Singleton.instance;
+      }
+    }
+    ```
+    ✅ **Thread-safe** (instance is created when the class is loaded).
+    ❌ **Less performant** if the instance is not always used.
+  </TabItem>
+
+  <TabItem label="Double-Checked Locking">
+    ```typescript
+    class Singleton {
+      private static instance: Singleton | null = null;
+      private constructor() {}
+      public static getInstance(): Singleton {
+        if (!Singleton.instance) {
+          if (!Singleton.instance) {
+            Singleton.instance = new Singleton();
+          }
+        }
+        return Singleton.instance;
+      }
+    }
+    ```
+    ✅ **Thread-safe** and performant.
+  </TabItem>
+</Tabs>
+
+---
+
+## Singleton Diagram (D2)
+
+```d2
+direction: right
+
+Singleton: {
+  shape: class
+  width: 200
+  height: 100
+
+  - instance: Singleton
+  - constructor: private
+  + getInstance: Singleton
+}
+
+Client1: {shape: person}
+Client2: {shape: person}
+
+Client1 -> Singleton.getInstance: "getInstance()"
+Client2 -> Singleton.getInstance: "getInstance()"
+
+Singleton.getInstance -> Singleton.instance: "returns"
+```
+
+---
+
+## Examples in Different Languages
+
+<Tabs>
+    <TabItem label="TypeScript">
+        ```typescript
+        class Database {
+        private static instance: Database;
+        private constructor() {
+        console.log("Connecting to the database...");
+    }
+        public static getInstance(): Database {
+        if (!Database.instance) {
+        Database.instance = new Database();
+    }
+        return Database.instance;
+    }
+        public query(sql: string): void {
+        console.log(`Executing: ${sql}`);
+    }
+    }
+
+        // Usage
+        const db1 = Database.getInstance();
+        const db2 = Database.getInstance();
+        console.log(db1 === db2); // true (same instance)
+        ```
+    </TabItem>
+
+    <TabItem label="Java">
+        ```java
+        public class Singleton {
+        private static Singleton instance;
+
+        private Singleton() {}
+
+        public static Singleton getInstance() {
+        if (instance == null) {
+        instance = new Singleton();
+    }
+        return instance;
+    }
+    }
+
+        // Usage
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+        System.out.println(singleton1 == singleton2); // true (same instance)
+        ```
+    </TabItem>
+
+    <TabItem label="PHP">
+        ```php
+        class Singleton {
+        private static $instance = null;
+
+        private function __construct() {}
+
+        public static function getInstance() {
+        if (self::$instance === null) {
+        self::$instance = new Singleton();
+    }
+        return self::$instance;
+    }
+    }
+
+        // Usage
+        $singleton1 = Singleton::getInstance();
+        $singleton2 = Singleton::getInstance();
+        var_dump($singleton1 === $singleton2); // true (same instance)
+        ```
+    </TabItem>
+
+    <TabItem label="Rust">
+        ```rust
+        use std::sync::Mutex;
+
+        struct Singleton {
+        value: i32,
+    }
+
+        impl Singleton {
+        fn new() -> Self {
+        Singleton { value: 0 }
+    }
+
+        fn get_instance() -> &'static Mutex<Singleton> {
+        static INSTANCE: Mutex<Singleton> = Mutex::new(Singleton::new());
+        &INSTANCE
+    }
+        }
+
+        // Usage
+        let singleton = Singleton::get_instance();
+        let mut singleton = singleton.lock().unwrap();
+        singleton.value = 42;
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Example in Vue.js
+
+### Singleton for a Global Store
+    ```javascript
+// store.js
+let instance = null;
+class Store {
+  constructor() {
+    if (!instance) {
+      this.state = { count: 0 };
+      instance = this;
+    }
+    return instance;
+  }
+  increment() {
+    this.state.count++;
+  }
+}
+export const store = new Store();
+```
+
+### Usage in a Vue Component
+    ```vue
+<script setup>
+import { store } from './store';
+store.increment();
+console.log(store.state.count); // 1
+</script>
+```
+
+---
+
+## When to Avoid Singleton?
+
+- **Stateful Services:** If two parts of the application simultaneously modify shared state, it can lead to unexpected behavior.
+- **Unit Testing:** Singletons make testing more difficult (global state).
+- **Scalability:** In a multi-instance environment, a Singleton is no longer "global" to the entire application.
+
+---
+
+## Getting Started with Singleton
+
+<Steps>
+    1. **Identify the Need**
+    Determine if your application truly needs a single instance for a specific resource or service.
+    2. **Choose the Right Approach**
+    Decide between lazy initialization, eager initialization, or double-checked locking based on your environment.
+    3. **Implement the Singleton**
+    Write the class with a private constructor and a static method to access the instance.
+    4. **Test Thoroughly**
+    Ensure thread safety and proper instantiation in your environment.
+    5. **Document the Usage**
+    Clearly document the Singleton's purpose and how to access its instance.
+</Steps>
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Use Lazy Initialization" icon="approve-check">
+        Lazy initialization is simple and effective for most JavaScript/TypeScript applications.
+    </Card>
+    <Card title="Avoid Global State" icon="pencil">
+        Minimize the use of global state to make your application more testable.
+    </Card>
+    <Card title="Document the Singleton" icon="open-book">
+        Clearly document the Singleton's purpose and usage to avoid misuse.
+    </Card>
+    <Card title="Consider Alternatives" icon="rocket">
+        In many cases, a simple object literal or module can replace a Singleton.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Overusing Singleton]
+Avoid using Singleton for everything. It can lead to tightly coupled code and make testing difficult.
+    :::
+
+:::caution[Ignoring Thread Safety]
+Even in single-threaded environments, ensure your Singleton is safe for asynchronous operations.
+    :::
+
+:::caution[Not Documenting]
+Always document why a Singleton is used and how to access its instance.
+    :::
+
+---
+
+## Real-World Example: Logging Service
+
+Let's build a simple logging service using the Singleton pattern:
+
+<Tabs>
+    <TabItem label="Singleton Logger">
+        ```typescript
+        class Logger {
+        private static instance: Logger;
+        private logs: string[] = [];
+
+        private constructor() {}
+
+        public static getInstance(): Logger {
+        if (!Logger.instance) {
+        Logger.instance = new Logger();
+    }
+        return Logger.instance;
+    }
+
+        public log(message: string): void {
+        this.logs.push(message);
+        console.log(message);
+    }
+
+        public getLogs(): string[] {
+        return this.logs;
+    }
+    }
+
+        // Usage
+        const logger1 = Logger.getInstance();
+        const logger2 = Logger.getInstance();
+
+        logger1.log("Application started.");
+        logger2.log("User logged in.");
+
+        console.log(logger1.getLogs()); // ["Application started.", "User logged in."]
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Benefits of Singleton
+
+- **Consistency:** Ensures a single point of control for shared resources.
+- **Resource Efficiency:** Avoids unnecessary duplication of resources.
+- **Global Access:** Provides a well-known access point to the instance.
+
+---
+
+## Tools and Resources
+
+<CardGrid stagger>
+    <Card title="TypeScript Handbook" icon="typescript">
+        Learn more about classes and static methods in TypeScript.
+    </Card>
+    <Card title="Vue.js Documentation" icon="vue">
+        Explore how to manage state in Vue.js applications.
+    </Card>
+    <Card title="Design Patterns Book" icon="book">
+        A classic resource for understanding design patterns, including Singleton.
+    </Card>
+</CardGrid>
+
+---
+
+:::tip[Ready to Implement?]
+Start by identifying a clear use case for Singleton in your application. Implement it with thread safety in mind, and always document its purpose and usage!
+:::
