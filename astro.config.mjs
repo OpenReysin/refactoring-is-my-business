@@ -13,6 +13,14 @@ export default defineConfig({
         starlight({
             plugins: [starlightThemeRapide()],
             title: "Refactoring Is My Business",
+            customCss: [
+                "/src/assets/global.css",
+            ],
+            logo: {
+                light: '/src/assets/logo.png',
+                dark: '/src/assets/logo.png',
+            },
+            favicon: "/favicon.ico",
             social: [
                 {
                     icon: "github",

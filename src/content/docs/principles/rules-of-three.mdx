@@ -1,0 +1,309 @@
+---
+title: Rule of Three - Refactoring Guideline
+description: A refactoring guideline to decide when to eliminate code duplication by extracting repeated logic into reusable procedures.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+The **Rule of Three** is an empirical guideline in code refactoring. It helps developers decide when to refactor similar code snippets to avoid duplication. The rule states:
+
+> **When you have two instances of similar code, it's usually okay to leave them as-is. But when you have three instances, it's time to refactor and extract the common logic into a new procedure.**
+
+This rule was popularized by **Martin Fowler** in his book *Refactoring: Improving the Design of Existing Code* and is attributed to **Don Roberts**.
+
+---
+
+## Why Does the Rule of Three Matter?
+
+### The Problem with Code Duplication
+
+- **Maintenance Overhead**: When the same logic is duplicated in multiple places, any change to that logic must be applied consistently across all instances. This increases the risk of errors and inconsistencies.
+- **Readability**: Duplicated code makes the codebase harder to read and understand.
+- **Scalability**: As the codebase grows, duplicated logic becomes increasingly difficult to manage.
+
+### The Risk of Premature Refactoring
+
+- **Wrong Abstraction**: Refactoring too early (e.g., after only two instances) can lead to overly generic or incorrect abstractions. This can make the code harder to understand and maintain as requirements evolve.
+- **Over-Engineering**: Introducing unnecessary complexity for hypothetical future needs.
+
+---
+
+## When to Apply the Rule of Three
+
+<CardGrid>
+  <Card title="Two Instances" icon="document">
+    It's usually fine to leave two similar code snippets as-is. The cost of refactoring may outweigh the benefits.
+  </Card>
+  <Card title="Three Instances" icon="warning">
+    When you encounter a third instance of similar code, it's time to refactor. Extract the common logic into a reusable function or method.
+  </Card>
+  <Card title="Beyond Three" icon="approve-check">
+    If you already have a reusable procedure, adding more instances is straightforward and maintains consistency.
+  </Card>
+</CardGrid>
+
+---
+
+## How to Refactor Using the Rule of Three
+
+### Step-by-Step Process
+
+<Steps>
+1. **Identify Duplication**
+   Scan your codebase for similar logic or patterns repeated in multiple places.
+2. **Evaluate the Cost**
+   Assess whether the duplication is causing maintenance issues or if it's likely to grow.
+3. **Extract Common Logic**
+   If you find three or more instances, extract the common logic into a new function or method.
+4. **Replace Duplicates**
+   Replace each duplicated instance with a call to the new function or method.
+5. **Test Thoroughly**
+   Ensure the refactored code works as expected and doesn't introduce new bugs.
+6. **Document the Change**
+   Add comments or documentation to explain the purpose of the new function or method.
+</Steps>
+
+---
+
+## Examples of the Rule of Three
+
+### Example 1: Logging Messages
+
+Suppose you have the following duplicated logging logic in multiple places:
+
+```javascript
+// File 1
+console.log(`[INFO] ${new Date().toISOString()}: User ${userId} logged in.`);
+
+// File 2
+console.log(`[INFO] ${new Date().toISOString()}: User ${userId} logged out.`);
+
+// File 3
+console.log(`[INFO] ${new Date().toISOString()}: User ${userId} updated profile.`);
+```
+
+#### Refactored Solution
+
+```javascript
+// utils/logger.js
+function logInfo(message, userId) {
+  console.log(`[INFO] ${new Date().toISOString()}: User ${userId} ${message}.`);
+}
+
+// File 1
+logInfo("logged in", userId);
+
+// File 2
+logInfo("logged out", userId);
+
+// File 3
+logInfo("updated profile", userId);
+```
+
+---
+
+### Example 2: Calculating Discounts
+
+Suppose you have the following duplicated discount calculation logic:
+
+```python
+# File 1
+def calculate_discount(price, discount_rate):
+    return price * (1 - discount_rate)
+
+# File 2
+def apply_discount(price, discount_rate):
+    return price * (1 - discount_rate)
+
+# File 3
+def get_final_price(price, discount_rate):
+    return price * (1 - discount_rate)
+```
+
+#### Refactored Solution
+
+```python
+# utils/discount.py
+def calculate_discount(price, discount_rate):
+    """Calculate the final price after applying a discount."""
+    return price * (1 - discount_rate)
+
+# File 1, 2, and 3
+from utils.discount import calculate_discount
+```
+
+---
+
+### Example 3: Validating User Input
+
+Suppose you have the following duplicated input validation logic:
+
+```java
+// File 1
+public boolean isValidEmail(String email) {
+    return email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+}
+
+// File 2
+public boolean checkEmail(String email) {
+    return email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+}
+
+// File 3
+public boolean validateEmail(String email) {
+    return email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+}
+```
+
+#### Refactored Solution
+
+```java
+// utils/ValidationUtils.java
+public class ValidationUtils {
+    public static boolean isValidEmail(String email) {
+        return email != null && email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+    }
+}
+
+// File 1, 2, and 3
+import utils.ValidationUtils;
+ValidationUtils.isValidEmail(email);
+```
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Refactoring Too Early]
+Refactoring after only two instances can lead to overly generic or incorrect abstractions. Wait until you have three instances to ensure the pattern is stable.
+:::
+
+:::caution[Ignoring Context]
+Not all similar code should be refactored. Consider the context and whether the logic is truly the same or just coincidentally similar.
+:::
+
+:::caution[Over-Abstraction]
+Avoid creating overly complex abstractions that are harder to understand than the original duplicated code.
+:::
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Start Small" icon="rocket">
+        Begin by refactoring small, manageable chunks of code. This reduces the risk of introducing bugs.
+    </Card>
+    <Card title="Test After Refactoring" icon="approve-check">
+        Always test your code after refactoring to ensure the changes work as expected.
+    </Card>
+    <Card title="Document Your Changes" icon="open-book">
+        Add comments or documentation to explain the purpose of the new function or method.
+    </Card>
+    <Card title="Use Meaningful Names" icon="pencil">
+        Name your extracted functions or methods clearly to reflect their purpose.
+    </Card>
+</CardGrid>
+
+---
+
+## Real-World Example: Refactoring a Web Application
+
+Suppose you're working on a web application with multiple endpoints that validate user input. Initially, the validation logic is duplicated across several files:
+
+```javascript
+// routes/user.js
+app.post('/register', (req, res) => {
+  if (!req.body.email || !req.body.email.includes('@')) {
+    return res.status(400).send('Invalid email');
+  }
+  // ...
+});
+
+// routes/profile.js
+app.put('/update', (req, res) => {
+  if (!req.body.email || !req.body.email.includes('@')) {
+    return res.status(400).send('Invalid email');
+  }
+  // ...
+});
+
+// routes/auth.js
+app.post('/login', (req, res) => {
+  if (!req.body.email || !req.body.email.includes('@')) {
+    return res.status(400).send('Invalid email');
+  }
+  // ...
+});
+```
+
+### Refactored Solution
+
+```javascript
+// utils/validation.js
+function validateEmail(email) {
+  if (!email || !email.includes('@')) {
+    throw new Error('Invalid email');
+  }
+}
+
+// routes/user.js
+app.post('/register', (req, res) => {
+  try {
+    validateEmail(req.body.email);
+    // ...
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+});
+
+// routes/profile.js
+app.put('/update', (req, res) => {
+  try {
+    validateEmail(req.body.email);
+    // ...
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+});
+
+// routes/auth.js
+app.post('/login', (req, res) => {
+  try {
+    validateEmail(req.body.email);
+    // ...
+  } catch (error) {
+    return res.status(400).send(error.message);
+  }
+});
+```
+
+---
+
+## References
+
+- Martin Fowler, Kent Beck, John Brant, William Opdyke, and Don Roberts. *Refactoring: Improving the Design of Existing Code*. Addison-Wesley Professional, 1999. [ISBN 978-0201485677](https://www.oreilly.com/library/view/refactoring-improving-the/0201485672/)
+- Sandi Metz. ["The Wrong Abstraction"](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction). 2016.
+
+---
+
+:::tip[Ready to Refactor?]
+Start by identifying duplicated code in your projects. Apply the Rule of Three to decide when to refactor, and always test your changes to ensure they work as expected. Happy refactoring!
+:::
+
+---
+
+## Related Concepts
+
+<CardGrid stagger>
+    <Card title="DRY (Don't Repeat Yourself)" icon="seti:html">
+        A principle of software development aimed at reducing repetition of software patterns.
+    </Card>
+    <Card title="Code Smells" icon="seti:javascript">
+        Indicators of potential problems in the codebase, such as duplicated code, long methods, or large classes.
+    </Card>
+    <Card title="SOLID Principles" icon="seti:config">
+        A set of five design principles to make software designs more understandable, flexible, and maintainable.
+    </Card>
+</CardGrid>

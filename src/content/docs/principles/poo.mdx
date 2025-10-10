@@ -1,0 +1,767 @@
+---
+title: OOP - Object-Oriented Programming
+description: A guide to the four fundamental principles of OOP—Encapsulation, Inheritance, Polymorphism, and Abstraction—with examples in multiple languages.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Object-Oriented Programming (OOP) is a programming paradigm that organizes software design around **objects** rather than functions and logic. It focuses on modeling real-world entities and their interactions. The four core principles of OOP are:
+
+<CardGrid>
+  <Card title="Encapsulation" icon="seti:lock">
+    Bundling data (attributes) and methods (functions) that operate on the data into a single unit (class). Restricts direct access to some of an object's components.
+  </Card>
+  <Card title="Inheritance" icon="seti:puppet">
+    A mechanism where a new class inherits properties and behavior from an existing class, promoting code reuse.
+  </Card>
+  <Card title="Polymorphism" icon="seti:crystal">
+    The ability of objects to take on many forms. Allows one interface to be used for a general class of actions.
+  </Card>
+  <Card title="Abstraction" icon="seti:json">
+    Hiding complex implementation details and showing only the essential features of an object.
+  </Card>
+</CardGrid>
+
+---
+
+## 1. Encapsulation
+
+**Definition:**
+Encapsulation is the mechanism of wrapping data (variables) and code (methods) together as a single unit, and restricting direct access to some of an object's components.
+
+**Why Use It?**
+- Protects the integrity of data.
+- Prevents unintended interference and misuse.
+- Makes code easier to maintain and modify.
+
+### Example: Bank Account
+
+<Tabs>
+  <TabItem label="Python">
+    ```python
+    class BankAccount:
+        def __init__(self, account_holder, balance=0):
+            self.__account_holder = account_holder  # Private attribute
+            self.__balance = balance                # Private attribute
+
+        def deposit(self, amount):
+            if amount > 0:
+                self.__balance += amount
+                return f"Deposited {amount}. New balance: {self.__balance}"
+            return "Invalid deposit amount."
+
+        def withdraw(self, amount):
+            if 0 < amount <= self.__balance:
+                self.__balance -= amount
+                return f"Withdrew {amount}. New balance: {self.__balance}"
+            return "Insufficient funds or invalid amount."
+
+        def get_balance(self):
+            return self.__balance
+
+    # Usage
+    account = BankAccount("Alice", 1000)
+    print(account.deposit(500))  # Deposited 500. New balance: 1500
+    print(account.withdraw(200)) # Withdrew 200. New balance: 1300
+    print(account.get_balance()) # 1300
+    ```
+  </TabItem>
+  <TabItem label="Java">
+    ```java
+    public class BankAccount {
+        private String accountHolder;
+        private double balance;
+
+        public BankAccount(String accountHolder, double balance) {
+            this.accountHolder = accountHolder;
+            this.balance = balance;
+        }
+
+        public void deposit(double amount) {
+            if (amount > 0) {
+                balance += amount;
+                System.out.println("Deposited " + amount + ". New balance: " + balance);
+            } else {
+                System.out.println("Invalid deposit amount.");
+            }
+        }
+
+        public void withdraw(double amount) {
+            if (amount > 0 && amount <= balance) {
+                balance -= amount;
+                System.out.println("Withdrew " + amount + ". New balance: " + balance);
+            } else {
+                System.out.println("Insufficient funds or invalid amount.");
+            }
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+    }
+
+    // Usage
+    public class Main {
+        public static void main(String[] args) {
+            BankAccount account = new BankAccount("Alice", 1000);
+            account.deposit(500);  // Deposited 500. New balance: 1500.0
+            account.withdraw(200); // Withdrew 200. New balance: 1300.0
+            System.out.println(account.getBalance()); // 1300.0
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JavaScript">
+    ```javascript
+    class BankAccount {
+        #accountHolder; // Private field
+        #balance;       // Private field
+
+        constructor(accountHolder, balance = 0) {
+            this.#accountHolder = accountHolder;
+            this.#balance = balance;
+        }
+
+        deposit(amount) {
+            if (amount > 0) {
+                this.#balance += amount;
+                return `Deposited ${amount}. New balance: ${this.#balance}`;
+            }
+            return "Invalid deposit amount.";
+        }
+
+        withdraw(amount) {
+            if (amount > 0 && amount <= this.#balance) {
+                this.#balance -= amount;
+                return `Withdrew ${amount}. New balance: ${this.#balance}`;
+            }
+            return "Insufficient funds or invalid amount.";
+        }
+
+        getBalance() {
+            return this.#balance;
+        }
+    }
+
+    // Usage
+    const account = new BankAccount("Alice", 1000);
+    console.log(account.deposit(500));  // Deposited 500. New balance: 1500
+    console.log(account.withdraw(200)); // Withdrew 200. New balance: 1300
+    console.log(account.getBalance());   // 1300
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## 2. Inheritance
+
+**Definition:**
+Inheritance allows a class (child) to inherit properties and methods from another class (parent). It promotes code reuse and establishes a relationship between classes.
+
+**Why Use It?**
+- Avoids redundant code.
+- Makes it easier to create and maintain applications.
+
+### Example: Animals
+
+<Tabs>
+  <TabItem label="Python">
+    ```python
+    class Animal:
+        def __init__(self, name):
+            self.name = name
+
+        def speak(self):
+            return f"{self.name} makes a sound."
+
+    class Dog(Animal):
+        def speak(self):
+            return f"{self.name} barks!"
+
+    class Cat(Animal):
+        def speak(self):
+            return f"{self.name} meows!"
+
+    # Usage
+    dog = Dog("Buddy")
+    cat = Cat("Whiskers")
+    print(dog.speak())  # Buddy barks!
+    print(cat.speak())  # Whiskers meows!
+    ```
+  </TabItem>
+  <TabItem label="Java">
+    ```java
+    class Animal {
+        protected String name;
+
+        public Animal(String name) {
+            this.name = name;
+        }
+
+        public String speak() {
+            return name + " makes a sound.";
+        }
+    }
+
+    class Dog extends Animal {
+        public Dog(String name) {
+            super(name);
+        }
+
+        @Override
+        public String speak() {
+            return name + " barks!";
+        }
+    }
+
+    class Cat extends Animal {
+        public Cat(String name) {
+            super(name);
+        }
+
+        @Override
+        public String speak() {
+            return name + " meows!";
+        }
+    }
+
+    // Usage
+    public class Main {
+        public static void main(String[] args) {
+            Dog dog = new Dog("Buddy");
+            Cat cat = new Cat("Whiskers");
+            System.out.println(dog.speak()); // Buddy barks!
+            System.out.println(cat.speak()); // Whiskers meows!
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JavaScript">
+    ```javascript
+    class Animal {
+        constructor(name) {
+            this.name = name;
+        }
+
+        speak() {
+            return `${this.name} makes a sound.`;
+        }
+    }
+
+    class Dog extends Animal {
+        speak() {
+            return `${this.name} barks!`;
+        }
+    }
+
+    class Cat extends Animal {
+        speak() {
+            return `${this.name} meows!`;
+        }
+    }
+
+    // Usage
+    const dog = new Dog("Buddy");
+    const cat = new Cat("Whiskers");
+    console.log(dog.speak()); // Buddy barks!
+    console.log(cat.speak()); // Whiskers meows!
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## 3. Polymorphism
+
+**Definition:**
+Polymorphism allows objects of different classes to be treated as objects of a common superclass. It enables one interface to represent different underlying forms (data types).
+
+**Why Use It?**
+- Simplifies code by allowing a single interface to represent different types.
+- Enhances flexibility and extensibility.
+
+### Example: Shapes
+
+<Tabs>
+  <TabItem label="Python">
+    ```python
+    class Shape:
+        def area(self):
+            pass
+
+    class Circle(Shape):
+        def __init__(self, radius):
+            self.radius = radius
+
+        def area(self):
+            return 3.14 * self.radius ** 2
+
+    class Square(Shape):
+        def __init__(self, side):
+            self.side = side
+
+        def area(self):
+            return self.side ** 2
+
+    # Usage
+    shapes = [Circle(5), Square(4)]
+    for shape in shapes:
+        print(f"Area: {shape.area()}")  # Area: 78.5, Area: 16
+    ```
+  </TabItem>
+  <TabItem label="Java">
+    ```java
+    abstract class Shape {
+        public abstract double area();
+    }
+
+    class Circle extends Shape {
+        private double radius;
+
+        public Circle(double radius) {
+            this.radius = radius;
+        }
+
+        @Override
+        public double area() {
+            return Math.PI * radius * radius;
+        }
+    }
+
+    class Square extends Shape {
+        private double side;
+
+        public Square(double side) {
+            this.side = side;
+        }
+
+        @Override
+        public double area() {
+            return side * side;
+        }
+    }
+
+    // Usage
+    public class Main {
+        public static void main(String[] args) {
+            Shape[] shapes = {new Circle(5), new Square(4)};
+            for (Shape shape : shapes) {
+                System.out.println("Area: " + shape.area()); // Area: 78.53981633974483, Area: 16.0
+            }
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JavaScript">
+    ```javascript
+    class Shape {
+        area() {
+            throw new Error("Method 'area()' must be implemented.");
+        }
+    }
+
+    class Circle extends Shape {
+        constructor(radius) {
+            super();
+            this.radius = radius;
+        }
+
+        area() {
+            return Math.PI * this.radius ** 2;
+        }
+    }
+
+    class Square extends Shape {
+        constructor(side) {
+            super();
+            this.side = side;
+        }
+
+        area() {
+            return this.side ** 2;
+        }
+    }
+
+    // Usage
+    const shapes = [new Circle(5), new Square(4)];
+    shapes.forEach(shape => console.log(`Area: ${shape.area()}`)); // Area: 78.53981633974483, Area: 16
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## 4. Abstraction
+
+**Definition:**
+Abstraction is the concept of hiding complex implementation details and showing only the essential features of an object. It helps reduce complexity and improve efficiency.
+
+**Why Use It?**
+- Focuses on what an object does, not how it does it.
+- Simplifies interaction with objects.
+
+### Example: Vehicle
+
+<Tabs>
+  <TabItem label="Python">
+    ```python
+    from abc import ABC, abstractmethod
+
+    class Vehicle(ABC):
+        @abstractmethod
+        def start(self):
+            pass
+
+        @abstractmethod
+        def stop(self):
+            pass
+
+    class Car(Vehicle):
+        def start(self):
+            return "Car started."
+
+        def stop(self):
+            return "Car stopped."
+
+    class Bike(Vehicle):
+        def start(self):
+            return "Bike started."
+
+        def stop(self):
+            return "Bike stopped."
+
+    # Usage
+    car = Car()
+    bike = Bike()
+    print(car.start())  # Car started.
+    print(bike.stop())  # Bike stopped.
+    ```
+  </TabItem>
+  <TabItem label="Java">
+    ```java
+    abstract class Vehicle {
+        public abstract String start();
+        public abstract String stop();
+    }
+
+    class Car extends Vehicle {
+        @Override
+        public String start() {
+            return "Car started.";
+        }
+
+        @Override
+        public String stop() {
+            return "Car stopped.";
+        }
+    }
+
+    class Bike extends Vehicle {
+        @Override
+        public String start() {
+            return "Bike started.";
+        }
+
+        @Override
+        public String stop() {
+            return "Bike stopped.";
+        }
+    }
+
+    // Usage
+    public class Main {
+        public static void main(String[] args) {
+            Vehicle car = new Car();
+            Vehicle bike = new Bike();
+            System.out.println(car.start()); // Car started.
+            System.out.println(bike.stop()); // Bike stopped.
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JavaScript">
+    ```javascript
+    class Vehicle {
+        start() {
+            throw new Error("Method 'start()' must be implemented.");
+        }
+
+        stop() {
+            throw new Error("Method 'stop()' must be implemented.");
+        }
+    }
+
+    class Car extends Vehicle {
+        start() {
+            return "Car started.";
+        }
+
+        stop() {
+            return "Car stopped.";
+        }
+    }
+
+    class Bike extends Vehicle {
+        start() {
+            return "Bike started.";
+        }
+
+        stop() {
+            return "Bike stopped.";
+        }
+    }
+
+    // Usage
+    const car = new Car();
+    const bike = new Bike();
+    console.log(car.start()); // Car started.
+    console.log(bike.stop()); // Bike stopped.
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## Best Practices
+
+<CardGrid>
+  <Card title="Favor Composition Over Inheritance" icon="approve-check">
+    Use composition (objects containing other objects) instead of inheritance to build complex functionality. It's more flexible and avoids deep hierarchies.
+  </Card>
+  <Card title="Keep Classes Small and Focused" icon="pencil">
+    Each class should have a single responsibility. This makes your code easier to test, maintain, and extend.
+  </Card>
+  <Card title="Use Interfaces for Polymorphism" icon="open-book">
+    Define interfaces for common behaviors. This allows different classes to be used interchangeably.
+  </Card>
+  <Card title="Document Your Classes" icon="rocket">
+    Clearly document the purpose, attributes, and methods of each class. This helps other developers understand and use your code.
+  </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Overusing Inheritance]
+Deep inheritance hierarchies can make your code rigid and hard to maintain. Prefer composition and interfaces.
+:::
+
+:::caution[Ignoring Encapsulation]
+Exposing internal data directly can lead to unintended side effects. Always use getters/setters or private attributes.
+:::
+
+:::caution[Over-Abstraction]
+Creating too many abstract classes or interfaces can complicate your design. Only abstract when necessary.
+:::
+
+---
+
+## Real-World Example: E-Commerce System
+
+Let’s design a simple e-commerce system using OOP principles:
+
+<Tabs>
+  <TabItem label="Python">
+    ```python
+    class Product:
+        def __init__(self, name, price):
+            self.__name = name
+            self.__price = price
+
+        def get_name(self):
+            return self.__name
+
+        def get_price(self):
+            return self.__price
+
+    class ShoppingCart:
+        def __init__(self):
+            self.__items = []
+
+        def add_item(self, product, quantity=1):
+            self.__items.append((product, quantity))
+
+        def calculate_total(self):
+            return sum(product.get_price() * quantity for product, quantity in self.__items)
+
+    class User:
+        def __init__(self, name, email):
+            self.__name = name
+            self.__email = email
+            self.__cart = ShoppingCart()
+
+        def add_to_cart(self, product, quantity=1):
+            self.__cart.add_item(product, quantity)
+
+        def checkout(self):
+            total = self.__cart.calculate_total()
+            return f"Order placed. Total: ${total:.2f}"
+
+    # Usage
+    laptop = Product("Laptop", 999.99)
+    phone = Product("Phone", 699.99)
+    user = User("Alice", "alice@example.com")
+    user.add_to_cart(laptop)
+    user.add_to_cart(phone, 2)
+    print(user.checkout())  # Order placed. Total: $2399.97
+    ```
+  </TabItem>
+  <TabItem label="Java">
+    ```java
+    class Product {
+        private String name;
+        private double price;
+
+        public Product(String name, double price) {
+            this.name = name;
+            this.price = price;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+    }
+
+    class ShoppingCart {
+        private List<Pair<Product, Integer>> items = new ArrayList<>();
+
+        public void addItem(Product product, int quantity) {
+            items.add(new Pair<>(product, quantity));
+        }
+
+        public double calculateTotal() {
+            return items.stream()
+                .mapToDouble(pair -> pair.getKey().getPrice() * pair.getValue())
+                .sum();
+        }
+    }
+
+    class User {
+        private String name;
+        private String email;
+        private ShoppingCart cart;
+
+        public User(String name, String email) {
+            this.name = name;
+            this.email = email;
+            this.cart = new ShoppingCart();
+        }
+
+        public void addToCart(Product product, int quantity) {
+            cart.addItem(product, quantity);
+        }
+
+        public String checkout() {
+            double total = cart.calculateTotal();
+            return String.format("Order placed. Total: $%.2f", total);
+        }
+    }
+
+    // Usage
+    public class Main {
+        public static void main(String[] args) {
+            Product laptop = new Product("Laptop", 999.99);
+            Product phone = new Product("Phone", 699.99);
+            User user = new User("Alice", "alice@example.com");
+            user.addToCart(laptop, 1);
+            user.addToCart(phone, 2);
+            System.out.println(user.checkout()); // Order placed. Total: $2399.97
+        }
+    }
+    ```
+  </TabItem>
+  <TabItem label="JavaScript">
+    ```javascript
+    class Product {
+        #name;
+        #price;
+
+        constructor(name, price) {
+            this.#name = name;
+            this.#price = price;
+        }
+
+        getName() {
+            return this.#name;
+        }
+
+        getPrice() {
+            return this.#price;
+        }
+    }
+
+    class ShoppingCart {
+        #items = [];
+
+        addItem(product, quantity = 1) {
+            this.#items.push({ product, quantity });
+        }
+
+        calculateTotal() {
+            return this.#items.reduce(
+                (total, item) => total + item.product.getPrice() * item.quantity,
+                0
+            );
+        }
+    }
+
+    class User {
+        #name;
+        #email;
+        #cart;
+
+        constructor(name, email) {
+            this.#name = name;
+            this.#email = email;
+            this.#cart = new ShoppingCart();
+        }
+
+        addToCart(product, quantity = 1) {
+            this.#cart.addItem(product, quantity);
+        }
+
+        checkout() {
+            const total = this.#cart.calculateTotal();
+            return `Order placed. Total: $${total.toFixed(2)}`;
+        }
+    }
+
+    // Usage
+    const laptop = new Product("Laptop", 999.99);
+    const phone = new Product("Phone", 699.99);
+    const user = new User("Alice", "alice@example.com");
+    user.addToCart(laptop);
+    user.addToCart(phone, 2);
+    console.log(user.checkout()); // Order placed. Total: $2399.97
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## Tools and Resources
+
+<CardGrid stagger>
+  <Card title="UML" icon="seti:html">
+    Unified Modeling Language (UML) is a standard language for specifying, visualizing, and documenting the artifacts of an object-oriented system.
+  </Card>
+  <Card title="Design Patterns" icon="seti:javascript">
+    Learn about common design patterns like Singleton, Factory, Observer, and more to solve recurring design problems.
+  </Card>
+  <Card title="SOLID Principles" icon="seti:config">
+    SOLID is an acronym for five design principles to make software designs more understandable, flexible, and maintainable.
+  </Card>
+</CardGrid>
+
+---
+
+:::tip[Ready to Dive Deeper?]
+Start by identifying objects and their relationships in your next project. Apply encapsulation, inheritance, polymorphism, and abstraction to create a clean, modular, and maintainable codebase. OOP is a powerful paradigm—use it wisely!
+:::

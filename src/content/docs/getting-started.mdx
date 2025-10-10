@@ -1,6 +1,91 @@
 ---
-title: Getting Started with Development Best Practices
-description: Kickstart your journey to writing better code with this beginner-friendly guide.
+title: Welcome to Refactoring Is My Business!
+description: Master the art of refactoring, design patterns, and software engineering.
 ---
 
-Welcome to the "Getting Started with Development Best Practices" guide! This resource is designed to help you embark on your journey to writing better code, whether you're a beginner or looking to refresh your skills.
+import {Aside, Tabs, TabItem, Card, CardGrid} from '@astrojs/starlight/components';
+
+> *"Code is like a city. It can be chaotic and sprawling, or it can be clean, organized, and efficient. Refactoring is urban planning for your software."*
+
+This guide is your ultimate resource for **refactoring, design patterns, software engineering best practices, libraries, and expert advice**. Whether you're a beginner or a seasoned developer, we’ll help you transform messy code into **clean, maintainable, and efficient software**.
+
+---
+
+## Why Refactoring and Design Patterns Matter
+
+### The Cost of Poor Code
+
+<Aside type="danger" title="Maintenance Nightmares">
+Poorly written code is harder to debug, extend, and maintain. It slows down development and increases costs.
+</Aside>
+
+<Aside type="caution" title="Technical Debt">
+Every shortcut or "quick fix" adds to your technical debt, which eventually must be paid—with interest.
+</Aside>
+
+<Aside type="note" title="Team Productivity">
+Clean, well-structured code makes it easier for teams to collaborate and onboard new members.
+</Aside>
+
+---
+
+### The Power of Refactoring and Design Patterns
+
+<CardGrid>
+  <Card title="Improved Readability" icon={"magnifier"}>
+    Refactored code is easier to read and understand, making it simpler for you and your team to work with.
+  </Card>
+  <Card title="Better Performance" icon={"seti:vite"}>
+    Optimized code runs faster and uses fewer resources.
+  </Card>
+  <Card title="Easier Maintenance" icon={"seti:default"}>
+    Well-structured code is easier to update, extend, and debug.
+  </Card>
+  <Card title="Future-Proofing" icon={"rocket"}>
+    Refactoring and design patterns help your codebase adapt to changing requirements and new features.
+  </Card>
+</CardGrid>
+
+---
+
+## Get Started with Refactoring
+
+<Card title="Refactoring Techniques" href="/refactoring/techniques">
+Learn step-by-step techniques to refactor your code effectively.
+</Card>
+
+<Card title="Design Patterns" href="/design-patterns">
+Explore common design patterns and how to apply them in your projects.
+</Card>
+
+<Card title="Best Practices" href="/best-practices">
+Discover software engineering best practices for maintainable code.
+</Card>
+
+---
+
+## Example: Before and After Refactoring
+
+```javascript
+// Before: Messy, hard-to-read code
+function calculateTotal(items) {
+  let total = 0;
+  for (let i = 0; i < items.length; i++) {
+    total += items[i].price * items[i].quantity;
+  }
+  return total;
+}
+```
+
+```javascript
+// After: Clean, refactored code
+function calculateTotal(items) {
+  return items.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+```
+
+---
+
+<Aside type="tip" title="Pro Tip">
+    Refactoring is an iterative process. Start small, focus on one area at a time, and always test your changes!
+</Aside>
