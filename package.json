@@ -19,5 +19,8 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4"
+	},
+	"engines": {
+		"node": "^20.0.0"
 	}
 }
