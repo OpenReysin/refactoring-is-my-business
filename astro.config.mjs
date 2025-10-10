@@ -117,5 +117,5 @@ export default defineConfig({
                 lang: "fr",
             },
         },
-    }), d2()],
+    })],
 });

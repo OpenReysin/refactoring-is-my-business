@@ -6,8 +6,6 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import { Steps } from '@astrojs/starlight/components';
 
-# Singleton: Ensuring a Single Instance
-
 The **Singleton** is a **creational design pattern** that ensures a class has only **one instance** and provides a global point of access to it. It is widely used for managing shared resources like configurations, database connections, or logging services.
 
 ---
@@ -103,129 +101,103 @@ A **non-thread-safe** Singleton can create multiple instances if two threads ins
 
 ---
 
-## Singleton Diagram (D2)
-
-```d2
-direction: right
-
-Singleton: {
-  shape: class
-  width: 200
-  height: 100
-
-  - instance: Singleton
-  - constructor: private
-  + getInstance: Singleton
-}
-
-Client1: {shape: person}
-Client2: {shape: person}
-
-Client1 -> Singleton.getInstance: "getInstance()"
-Client2 -> Singleton.getInstance: "getInstance()"
-
-Singleton.getInstance -> Singleton.instance: "returns"
-```
-
----
-
 ## Examples in Different Languages
 
 <Tabs>
-    <TabItem label="TypeScript">
-        ```typescript
-        class Database {
-        private static instance: Database;
-        private constructor() {
+  <TabItem label="TypeScript">
+    ```typescript
+    class Database {
+      private static instance: Database;
+      private constructor() {
         console.log("Connecting to the database...");
-    }
-        public static getInstance(): Database {
+      }
+      public static getInstance(): Database {
         if (!Database.instance) {
-        Database.instance = new Database();
-    }
+          Database.instance = new Database();
+        }
         return Database.instance;
-    }
-        public query(sql: string): void {
+      }
+      public query(sql: string): void {
         console.log(`Executing: ${sql}`);
-    }
+      }
     }
 
-        // Usage
-        const db1 = Database.getInstance();
-        const db2 = Database.getInstance();
-        console.log(db1 === db2); // true (same instance)
-        ```
-    </TabItem>
+    // Usage
+    const db1 = Database.getInstance();
+    const db2 = Database.getInstance();
+    console.log(db1 === db2); // true (same instance)
+    ```
+  </TabItem>
 
-    <TabItem label="Java">
-        ```java
-        public class Singleton {
+  <TabItem label="Java">
+    ```java
+    public class Singleton {
         private static Singleton instance;
 
         private Singleton() {}
 
         public static Singleton getInstance() {
-        if (instance == null) {
-        instance = new Singleton();
-    }
-        return instance;
-    }
+            if (instance == null) {
+                instance = new Singleton();
+            }
+            return instance;
+        }
     }
 
-        // Usage
-        Singleton singleton1 = Singleton.getInstance();
-        Singleton singleton2 = Singleton.getInstance();
-        System.out.println(singleton1 == singleton2); // true (same instance)
-        ```
-    </TabItem>
+    // Usage
+    Singleton singleton1 = Singleton.getInstance();
+    Singleton singleton2 = Singleton.getInstance();
+    System.out.println(singleton1 == singleton2); // true (same instance)
+    ```
+  </TabItem>
 
-    <TabItem label="PHP">
-        ```php
-        class Singleton {
+  <TabItem label="PHP">
+    ```php
+    class Singleton {
         private static $instance = null;
 
         private function __construct() {}
 
         public static function getInstance() {
-        if (self::$instance === null) {
-        self::$instance = new Singleton();
-    }
-        return self::$instance;
-    }
+            if (self::$instance === null) {
+                self::$instance = new Singleton();
+            }
+            return self::$instance;
+        }
     }
 
-        // Usage
-        $singleton1 = Singleton::getInstance();
-        $singleton2 = Singleton::getInstance();
-        var_dump($singleton1 === $singleton2); // true (same instance)
-        ```
-    </TabItem>
+    // Usage
+    $singleton1 = Singleton::getInstance();
+    $singleton2 = Singleton::getInstance();
+    var_dump($singleton1 === $singleton2); // true (same instance)
+    ```
+  </TabItem>
 
-    <TabItem label="Rust">
-        ```rust
-        use std::sync::Mutex;
+  <TabItem label="Rust">
+    ```rust
+    use std::sync::Mutex;
 
-        struct Singleton {
+    struct Singleton {
         value: i32,
     }
 
-        impl Singleton {
+    impl Singleton {
         fn new() -> Self {
-        Singleton { value: 0 }
-    }
-
-        fn get_instance() -> &'static Mutex<Singleton> {
-        static INSTANCE: Mutex<Singleton> = Mutex::new(Singleton::new());
-        &INSTANCE
-    }
+            Singleton { value: 0 }
         }
 
-        // Usage
-        let singleton = Singleton::get_instance();
-        let mut singleton = singleton.lock().unwrap();
-        singleton.value = 42;
-        ```
-    </TabItem>
+        fn get_instance() -> &'static Mutex<Singleton> {
+            static INSTANCE: Mutex<Singleton> = Mutex::new(Singleton::new());
+            &INSTANCE
+        }
+    }
+
+    // Usage
+    let singleton = Singleton::get_instance();
+    let mut singleton = singleton.lock().unwrap();
+    singleton.value = 42;
+    ```
+  </TabItem>
 </Tabs>
 
 ---
@@ -233,7 +205,7 @@ Singleton.getInstance -> Singleton.instance: "returns"
 ## Example in Vue.js
 
 ### Singleton for a Global Store
-    ```javascript
+```javascript
 // store.js
 let instance = null;
 class Store {
@@ -252,7 +224,7 @@ export const store = new Store();
 ```
 
 ### Usage in a Vue Component
-    ```vue
+```vue
 <script setup>
 import { store } from './store';
 store.increment();
@@ -310,15 +282,15 @@ console.log(store.state.count); // 1
 
 :::caution[Overusing Singleton]
 Avoid using Singleton for everything. It can lead to tightly coupled code and make testing difficult.
-    :::
+:::
 
 :::caution[Ignoring Thread Safety]
 Even in single-threaded environments, ensure your Singleton is safe for asynchronous operations.
-    :::
+:::
 
 :::caution[Not Documenting]
 Always document why a Singleton is used and how to access its instance.
-    :::
+:::
 
 ---
 
@@ -371,22 +343,6 @@ Let's build a simple logging service using the Singleton pattern:
 - **Consistency:** Ensures a single point of control for shared resources.
 - **Resource Efficiency:** Avoids unnecessary duplication of resources.
 - **Global Access:** Provides a well-known access point to the instance.
-
----
-
-## Tools and Resources
-
-<CardGrid stagger>
-    <Card title="TypeScript Handbook" icon="typescript">
-        Learn more about classes and static methods in TypeScript.
-    </Card>
-    <Card title="Vue.js Documentation" icon="vue">
-        Explore how to manage state in Vue.js applications.
-    </Card>
-    <Card title="Design Patterns Book" icon="book">
-        A classic resource for understanding design patterns, including Singleton.
-    </Card>
-</CardGrid>
 
 ---
 
