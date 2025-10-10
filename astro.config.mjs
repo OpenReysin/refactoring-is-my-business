@@ -7,6 +7,7 @@ import starlightThemeRapide from "starlight-theme-rapide";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://refactoring-is-my-business.com',
+  base: "/",
 
   integrations: [
       starlight({
