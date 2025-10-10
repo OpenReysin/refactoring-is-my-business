@@ -9,6 +9,7 @@ import node from "@astrojs/node";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://refactoring-is-my-business.com',
+  output: "server",
 
   integrations: [
       starlight({
