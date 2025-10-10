@@ -75,6 +75,23 @@ export default defineConfig({
                         }
                     ]
                 },
+                {
+                    label: "Useful libraries",
+                    translations: {
+                        fr: "Librairies Utiles",
+                    },
+                    items: [
+                        {
+                            slug: "useful-libraries",
+                        },
+                        {
+                            label: "JavaScript / TypeScript",
+                            autogenerate: {
+                                directory: "useful-libraries/javascript-typescript",
+                            },
+                        }
+                    ]
+                }
             ],
             defaultLocale: "root",
             locales: {

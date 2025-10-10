@@ -1,0 +1,174 @@
+---
+title: Zod - TypeScript-first schema declaration and validation library
+description: A TypeScript-first schema declaration and validation library.
+---
+
+![NPM Last Update](https://img.shields.io/npm/last-update/zod)
+![NPM Downloads](https://img.shields.io/npm/dw/zod)
+![NPM Version](https://img.shields.io/npm/v/zod)
+
+
+**Zod** est une bibliothèque de validation de schémas pour TypeScript, conçue pour être **type-safe** et **déclarative**. Elle permet de définir des schémas de données, de valider les entrées, et de générer automatiquement des types TypeScript. Zod est particulièrement utile pour valider les données provenant d'APIs, de formulaires, ou de configurations.
+
+---
+
+## 🔗 Liens officiels
+
+- Site officiel : [https://zod.dev/](https://zod.dev/)
+- GitHub : [https://github.com/colinhacks/zod](https://github.com/colinhacks/zod)
+
+---
+
+## 📦 Installation
+
+Installez Zod via npm ou yarn :
+
+```bash
+npm install zod
+# ou
+yarn add zod
+```
+
+---
+
+## 🔧 Utilisation de base
+
+### 1. Définir un schéma
+
+```typescript
+import { z } from "zod";
+
+// Définir un schéma pour un objet "User"
+const UserSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(2),
+  age: z.number().int().positive(),
+  email: z.string().email(),
+});
+```
+
+### 2. Valider des données
+
+```typescript
+const userData = {
+  id: "550e8400-e29b-41d4-a716-446655440000",
+  name: "Alice",
+  age: 30,
+  email: "alice@example.com",
+};
+
+const result = UserSchema.safeParse(userData);
+
+if (result.success) {
+  console.log("Validation réussie :", result.data);
+} else {
+  console.error("Erreur de validation :", result.error);
+}
+```
+
+---
+
+## ✨ Fonctionnalités avancées
+
+### Schémas imbriqués
+
+```typescript
+const AddressSchema = z.object({
+  street: z.string(),
+  city: z.string(),
+  zipCode: z.string().regex(/^\d{5}$/),
+});
+
+const UserWithAddressSchema = UserSchema.extend({
+  address: AddressSchema,
+});
+```
+
+### Tableaux et types complexes
+
+```typescript
+const UserArraySchema = z.array(UserSchema);
+const OptionalUserSchema = UserSchema.optional();
+const NullableUserSchema = UserSchema.nullable();
+```
+
+### Transformations
+
+```typescript
+const UserWithFullNameSchema = UserSchema.extend({
+  fullName: z.string(),
+}).transform((user) => ({
+  ...user,
+  fullName: `${user.name} (${user.email})`,
+}));
+```
+
+---
+
+## 🔍 Validation d'API
+
+Zod est idéal pour valider les réponses d'API :
+
+```typescript
+const ApiResponseSchema = z.object({
+  status: z.literal("success"),
+  data: z.array(UserSchema),
+});
+
+const apiResponse = {
+  status: "success",
+  data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      name: "Alice",
+      age: 30,
+      email: "alice@example.com",
+    },
+  ],
+};
+
+const parsedResponse = ApiResponseSchema.parse(apiResponse);
+```
+
+---
+
+## 📚 Bonnes pratiques
+
+- **Réutilisez vos schémas** : Définissez des schémas de base et étendez-les.
+- **Utilisez `safeParse`** : Pour gérer les erreurs de validation de manière élégante.
+- **Documentez vos schémas** : Ajoutez des descriptions pour clarifier leur usage.
+
+---
+
+## 📖 Documentation officielle
+
+Pour plus de détails, consultez la [documentation officielle de Zod](https://zod.dev/).
+
+---
+
+## 💡 Exemple complet
+
+Voici un exemple complet d'utilisation de Zod dans un projet TypeScript :
+
+```typescript
+import { z } from "zod";
+
+// 1. Définir un schéma
+const ProductSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  price: z.number().positive(),
+  inStock: z.boolean(),
+});
+
+// 2. Valider une entrée utilisateur
+const userInput = {
+  id: "550e8400-e29b-41d4-a716-446655440000",
+  name: "Laptop",
+  price: 999.99,
+  inStock: true,
+};
+
+const product = ProductSchema.parse(userInput);
+console.log(product); // { id: "...", name: "Laptop", price: 999.99, inStock: true }
+```
