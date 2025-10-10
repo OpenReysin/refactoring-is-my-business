@@ -1,0 +1,65 @@
+---
+title: Consola - Elegant Console Logger
+description: A lightweight and elegant console logger for Node.js and browsers.
+---
+
+**Consola** is a lightweight and elegant logging library designed to replace `console.log` with advanced features such as log levels, custom styles, and formatted output. It is ideal for debugging and logging in Node.js applications and browsers.
+
+---
+
+## 📦 Installation
+Install `consola` via npm or yarn:
+```bash
+npm install consola
+# or
+yarn add consola
+```
+
+---
+
+## 🔧 Basic Usage
+
+### 1. Basic Logging
+```typescript
+import consola from "consola";
+consola.log("Standard log message");
+consola.info("Info message");
+consola.success("Success message");
+consola.warn("Warning message");
+consola.error("Error message");
+```
+
+### 2. Styled Logging
+```typescript
+consola.log("Message in %s", "red", { color: "red" });
+consola.info("Message in %s", "bold", { bold: true });
+```
+
+---
+
+## ✨ Advanced Features
+
+### Log Levels
+```typescript
+consola.level = 2; // Only show logs of level 2 and below
+consola.log("This message will not appear");
+consola.warn("This message will appear");
+```
+
+### Conditional Logging
+```typescript
+consola.withTag("api").log("Tagged message");
+consola.withScope("module", "api").log("Scoped message");
+```
+
+---
+
+## 📚 Best Practices
+- **Use Tags:** To filter and organize logs.
+- **Customize Styles:** To improve log readability.
+- **Manage Levels:** To control log verbosity in production.
+
+---
+
+## 📖 Official Documentation
+For more details, check out the [Consola official documentation](https://github.com/unjs/consola).

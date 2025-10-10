@@ -1,0 +1,69 @@
+---
+title: BiomeJS - The All-in-one JavaScript Toolchain
+description: A modern, fast, and opinionated toolchain for JavaScript and TypeScript projects.
+---
+
+**BiomeJS** is an all-in-one tool for JavaScript and TypeScript projects, combining a linter, formatter, and bundler. It is designed to be fast, modern, and easy to configure, offering an alternative to traditional tools like ESLint, Prettier, and Webpack.
+
+---
+
+## 📦 Installation
+Install `biome` via npm or yarn:
+```bash
+npm install --save-dev @biomejs/biome
+# or
+yarn add --dev @biomejs/biome
+```
+
+---
+
+## 🔧 Basic Usage
+
+### 1. Initialize Biome
+```bash
+npx @biomejs/biome init
+```
+
+### 2. Linting and Formatting
+Add a script to your `package.json`:
+```json
+{
+  "scripts": {
+    "lint": "biome lint ./src",
+    "format": "biome format ./src --write"
+  }
+}
+```
+
+---
+
+## ✨ Advanced Features
+
+### Custom Configuration
+Create a `biome.json` file:
+```json
+{
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  }
+}
+```
+
+### IDE Integration
+Biome integrates with VSCode and other editors via dedicated extensions.
+
+---
+
+## 📚 Best Practices
+- **Automate Linting:** Integrate Biome into your Git hooks.
+- **Customize Rules:** Adapt linting rules to your project.
+- **Use the Formatter:** Maintain consistent code style.
+
+---
+
+## 📖 Official Documentation
+For more details, check out the [BiomeJS official documentation](https://biomejs.dev/).

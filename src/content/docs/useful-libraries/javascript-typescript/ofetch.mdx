@@ -1,0 +1,83 @@
+---
+
+title: OFetch - A Better Fetch API
+description: A lightweight, fetch-compatible HTTP client with enhanced features.
+
+---
+
+**OFetch** is a lightweight and modern library for making HTTP requests, designed as an improved alternative to the native `fetch` API. It offers a simpler syntax, better error handling, and advanced features like request cancellation, interceptors, and automatic JSON data handling.
+
+---
+
+## 📦 Installation
+Install `ofetch` via npm or yarn:
+```bash
+npm install ofetch
+# or
+yarn add ofetch
+```
+
+---
+
+## 🔧 Basic Usage
+
+### 1. GET Request
+```typescript
+import { ofetch } from "ofetch";
+const data = await ofetch("https://api.example.com/users");
+console.log(data);
+```
+
+### 2. POST Request
+```typescript
+const newUser = await ofetch("https://api.example.com/users", {
+  method: "POST",
+  body: { name: "Alice", age: 30 },
+});
+console.log(newUser);
+```
+
+---
+
+## ✨ Advanced Features
+
+### Error Handling
+```typescript
+try {
+  const data = await ofetch("https://api.example.com/unknown");
+} catch (error) {
+  console.error("Error:", error);
+}
+```
+
+### Interceptors
+```typescript
+const client = ofetch.create({
+  onRequest({ options }) {
+    options.headers = { ...options.headers, Authorization: "Bearer token" };
+  },
+});
+const data = await client("https://api.example.com/protected");
+```
+
+### Request Cancellation
+```typescript
+const controller = new AbortController();
+const promise = ofetch("https://api.example.com/long-request", {
+  signal: controller.signal,
+});
+// Cancel the request after 1 second
+setTimeout(() => controller.abort(), 1000);
+```
+
+---
+
+## 📚 Best Practices
+- **Reuse Instances:** Create configured instances to avoid repeating options.
+- **Handle Errors:** Use `try/catch` to capture HTTP errors.
+- **Optimize Requests:** Use interceptors to add headers or logs.
+
+---
+
+## 📖 Official Documentation
+For more details, check out the [OFetch official documentation](https://github.com/unjs/ofetch).
