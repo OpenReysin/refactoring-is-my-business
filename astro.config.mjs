@@ -4,6 +4,8 @@ import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightThemeRapide from "starlight-theme-rapide";
 
+import node from "@astrojs/node";
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://refactoring-is-my-business.com',
@@ -88,5 +90,9 @@ export default defineConfig({
               },
           },
       }),
-	],
+    ],
+
+  adapter: node({
+    mode: "standalone",
+  }),
 });

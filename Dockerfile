@@ -1,11 +1,14 @@
-FROM node:lts AS build
+FROM node:lts AS runtime
 WORKDIR /app
-COPY package*.json ./
+
 RUN npm install -g pnpm
-RUN pnpm install
+
 COPY . .
+
+RUN pnpm install
 RUN pnpm run build
 
-FROM nginx:alpine AS runtime
-COPY --from=build /app/dist /usr/share/nginx/html
+ENV HOST=0.0.0.0
+ENV PORT=80
 EXPOSE 80
+CMD node ./dist/server/entry.mjs
