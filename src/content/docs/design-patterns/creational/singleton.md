@@ -1,5 +1,5 @@
 ---
-title: "The Singleton Design Pattern in TypeScript and Vue.js"
+title: "Singleton"
 description: "Understanding the Singleton pattern, its uses, pitfalls, and how to implement it in TypeScript and Vue.js."
 ---
 

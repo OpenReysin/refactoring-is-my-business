@@ -1,0 +1,545 @@
+---
+title: Atomic Design
+description: A methodology for creating design systems with a clear hierarchy and reusable components.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+Atomic Design is a methodology for creating design systems by breaking down interfaces into fundamental building blocks. Created by Brad Frost, it provides a clear hierarchy that helps teams build consistent, scalable, and maintainable user interfaces.
+
+## What is Atomic Design?
+
+Atomic Design is inspired by chemistry, organizing UI components into five distinct levels that build upon each other, from smallest to largest:
+
+<CardGrid>
+  <Card title="Atoms" icon="star">
+    The basic building blocks of matter. In interfaces, these are HTML elements like buttons, inputs, and labels that can't be broken down further without losing functionality.
+  </Card>
+  <Card title="Molecules" icon="puzzle">
+    Groups of atoms bonded together. Simple UI components made of multiple atoms working as a unit, like a search form combining an input and button.
+  </Card>
+  <Card title="Organisms" icon="list-format">
+    Complex UI components composed of molecules and atoms. Relatively complex sections like headers, navigation bars, or product cards.
+  </Card>
+  <Card title="Templates" icon="document">
+    Page-level layouts that place organisms in a structure. They show the design's underlying content structure without real content.
+  </Card>
+  <Card title="Pages" icon="laptop">
+    Specific instances of templates with real content. What users actually see and interact with in the final product.
+  </Card>
+</CardGrid>
+
+## The Five Levels Explained
+
+### 1. Atoms
+
+Atoms are the foundational elements that cannot be broken down further without losing their purpose.
+
+**Examples:**
+- HTML tags: `<button>`, `<input>`, `<label>`, `<h1>`
+- Color palettes
+- Fonts
+- Animations
+- Icons
+
+<Tabs>
+  <TabItem label="Button Atom">
+```css
+/* atoms/button.css */
+.button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.button--primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.button--secondary {
+  background-color: #64748b;
+  color: white;
+}
+```
+</TabItem>
+  <TabItem label="Input Atom">
+```css
+/* atoms/input.css */
+.input {
+    padding: 0.625rem 0.875rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+```
+</TabItem>
+  <TabItem label="Label Atom">
+```css
+/* atoms/label.css */
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+    ```
+</TabItem>
+</Tabs>
+
+### 2. Molecules
+
+Molecules are simple groups of atoms functioning together as a unit.
+
+**Examples:**
+- Search form (input + button)
+- Form field (label + input + error message)
+- Social media icon group
+
+<Tabs>
+    <TabItem label="Search Form">
+        ```jsx
+        // molecules/SearchForm.jsx
+        import Button from '../atoms/Button';
+        import Input from '../atoms/Input';
+
+        export default function SearchForm() {
+            return (
+                <form className="search-form">
+                    <Input
+                        type="search"
+                        placeholder="Search..."
+                        aria-label="Search"
+                    />
+                    <Button variant="primary">Search</Button>
+                </form>
+            );
+        }
+        ```
+        ```css
+        /* molecules/search-form.css */
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 500px;
+        }
+        ```
+    </TabItem>
+    <TabItem label="Form Field">
+        ```jsx
+        // molecules/FormField.jsx
+        import Label from '../atoms/Label';
+        import Input from '../atoms/Input';
+
+        export default function FormField({
+            label,
+            id,
+            error,
+            ...inputProps
+        }) {
+            return (
+                <div className="form-field">
+                    <Label htmlFor={id}>{label}</Label>
+                    <Input id={id} {...inputProps} />
+                    {error && <span className="error">{error}</span>}
+                </div>
+            );
+        }
+        ```
+        ```css
+        /* molecules/form-field.css */
+        .form-field {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-field .error {
+            display: block;
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.375rem;
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+### 3. Organisms
+
+Organisms are relatively complex components composed of groups of molecules and/or atoms.
+
+**Examples:**
+- Header with logo, navigation, and search
+- Product card with image, title, price, and button
+- Comment section with user info, text, and actions
+
+<Tabs>
+    <TabItem label="Header">
+        ```jsx
+        // organisms/Header.jsx
+        import Logo from '../atoms/Logo';
+        import Navigation from '../molecules/Navigation';
+        import SearchForm from '../molecules/SearchForm';
+
+        export default function Header() {
+            return (
+                <header className="header">
+                    <div className="header__container">
+                        <Logo />
+                        <Navigation />
+                        <SearchForm />
+                    </div>
+                </header>
+            );
+        }
+        ```
+        ```css
+        /* organisms/header.css */
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+        }
+
+        .header__container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            padding: 0 1rem;
+        }
+        ```
+    </TabItem>
+    <TabItem label="Product Card">
+        ```jsx
+        // organisms/ProductCard.jsx
+        import Image from '../atoms/Image';
+        import Heading from '../atoms/Heading';
+        import Text from '../atoms/Text';
+        import Button from '../atoms/Button';
+
+        export default function ProductCard({ product }) {
+            return (
+                <article className="product-card">
+                    <Image
+                        src={product.image}
+                         alt={product.name}
+                         className="product-card__image"
+                    />
+                    <div className="product-card__content">
+                        <Heading level={3}>{product.name}</Heading>
+                        <Text className="product-card__price">
+                            ${product.price}
+                        </Text>
+                        <Text className="product-card__description">
+                            {product.description}
+                        </Text>
+                        <Button variant="primary">Add to Cart</Button>
+                    </div>
+                </article>
+            );
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+### 4. Templates
+
+Templates are page-level objects that place components into a layout, showing the design's content structure.
+
+```jsx
+// templates/ProductListTemplate.jsx
+import Header from '../organisms/Header';
+import Footer from '../organisms/Footer';
+import ProductGrid from '../organisms/ProductGrid';
+import Sidebar from '../organisms/Sidebar';
+
+export default function ProductListTemplate() {
+  return (
+    <div className="template">
+        <Header />
+        <main className="template__main">
+            <Sidebar />
+            <ProductGrid />
+        </main>
+        <Footer />
+    </div>
+  );
+}
+```
+
+### 5. Pages
+
+Pages are specific instances of templates with real representative content plugged in.
+
+```jsx
+// pages/ElectronicsPage.jsx
+import ProductListTemplate from '../templates/ProductListTemplate';
+
+export default function ElectronicsPage({ products }) {
+    return (
+        <ProductListTemplate
+            products={products}
+            category="Electronics"
+            filters={['Brand', 'Price', 'Rating']}
+        />
+    );
+}
+```
+
+## Project Structure
+
+Here's how to organize your project using Atomic Design:
+
+<FileTree>
+- src/
+    - components/
+        - atoms/
+            - Button.jsx
+            - Input.jsx
+            - Label.jsx
+            - Icon.jsx
+            - Text.jsx
+        - molecules/
+            - SearchForm.jsx
+            - FormField.jsx
+            - IconButton.jsx
+            - CardHeader.jsx
+        - organisms/
+            - Header.jsx
+            - Footer.jsx
+            - ProductCard.jsx
+            - Navigation.jsx
+        - templates/
+            - HomeTemplate.jsx
+            - ProductListTemplate.jsx
+            - ProductDetailTemplate.jsx
+        - pages/
+            - HomePage.jsx
+            - ElectronicsPage.jsx
+            - ProductDetailPage.jsx
+    - styles/
+        - atoms/
+        - molecules/
+        - organisms/
+        - base.css
+</FileTree>
+
+## Getting Started with Atomic Design
+
+<Steps>
+
+1. **Audit Your Interface**
+
+    Start by conducting an interface inventory. Screenshot and list all the different UI components in your current project or design.
+
+2. **Identify Atoms**
+
+    Extract the most basic elements: buttons, inputs, labels, headings, icons, colors, and typography. These should be completely reusable across your entire project.
+
+3. **Build Molecules**
+
+    Combine your atoms into simple, functional groups. A form field might combine a label and input. A search bar might combine an input and button.
+
+4. **Create Organisms**
+
+    Combine molecules and atoms into more complex components. A header might include a logo (atom), navigation (molecule), and search form (molecule).
+
+5. **Design Templates**
+
+    Arrange your organisms into page layouts. Focus on structure and layout rather than content at this stage.
+
+6. **Populate Pages**
+
+    Add real content to your templates to create actual pages. This is where you test how your system works with real data.
+
+</Steps>
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Keep Atoms Pure" icon="approve-check">
+        Atoms should be as generic and reusable as possible. Avoid coupling them to specific use cases or business logic.
+    </Card>
+    <Card title="Name Consistently" icon="pencil">
+        Use clear, consistent naming conventions. Consider using BEM (Block Element Modifier) or similar methodologies.
+    </Card>
+    <Card title="Document Everything" icon="open-book">
+        Create a living style guide or component library. Tools like Storybook are perfect for this.
+    </Card>
+    <Card title="Start Small" icon="rocket">
+        Begin with a few key components and expand gradually. Don't try to build your entire system at once.
+    </Card>
+</CardGrid>
+
+## Common Mistakes to Avoid
+
+:::caution[Over-Abstracting Atoms]
+Don't create atoms that are too abstract. A "Content" atom that can be anything isn't useful. Atoms should be specific HTML elements with clear purposes.
+:::
+
+:::caution[Skipping Levels]
+Don't jump from atoms directly to templates. The hierarchy exists for a reason—each level builds understanding and reusability.
+:::
+
+:::caution[Rigid Thinking]
+Atomic Design is a mental model, not a strict rule. Sometimes components blur between levels, and that's okay. Use the methodology as a guide, not a prison.
+:::
+
+## Real-World Example: Building a Login Form
+
+Let's build a complete login form using Atomic Design principles:
+
+<Tabs>
+    <TabItem label="Atoms">
+        ```jsx
+        // atoms/Button.jsx
+        export default function Button({ children, variant = 'primary', ...props }) {
+            return (
+                <button className={`button button--${variant}`} {...props}>
+                    {children}
+                </button>
+            );
+        }
+
+        // atoms/Input.jsx
+        export default function Input({ ...props }) {
+            return <input className="input" {...props} />;
+        }
+
+        // atoms/Label.jsx
+        export default function Label({ children, ...props }) {
+            return <label className="label" {...props}>{children}</label>;
+        }
+        ```
+</TabItem>
+<TabItem label="Molecules">
+```jsx
+// molecules/FormField.jsx
+import Label from '../atoms/Label';
+import Input from '../atoms/Input';
+
+export default function FormField({ label, id, error, ...props }) {
+    return (
+        <div className="form-field">
+            <Label htmlFor={id}>{label}</Label>
+            <Input id={id} {...props} />
+            {error && <span className="form-field__error">{error}</span>}
+        </div>
+    );
+}
+```
+</TabItem>
+<TabItem label="Organisms">
+```jsx
+// organisms/LoginForm.jsx
+import FormField from '../molecules/FormField';
+import Button from '../atoms/Button';
+
+export default function LoginForm({ onSubmit }) {
+    return (
+    <form className="login-form" onSubmit={onSubmit}>
+        <h2>Login</h2>
+        <FormField
+            label="Email"
+            id="email"
+            type="email"
+            required
+        />
+        <FormField
+            label="Password"
+            id="password"
+            type="password"
+            required
+        />
+        <Button type="submit">Sign In</Button>
+    </form>
+    );
+}
+```
+</TabItem>
+<TabItem label="Template">
+```jsx
+// templates/AuthTemplate.jsx
+import Header from '../organisms/Header';
+import Footer from '../organisms/Footer';
+
+export default function AuthTemplate({ children }) {
+    return (
+        <div className="auth-template">
+            <Header minimal />
+            <main className="auth-template__main">
+                <div className="auth-template__container">
+                    {children}
+                </div>
+            </main>
+            <Footer />
+        </div>
+    );
+}
+```
+</TabItem>
+<TabItem label="Page">
+```jsx
+// pages/LoginPage.jsx
+import AuthTemplate from '../templates/AuthTemplate';
+import LoginForm from '../organisms/LoginForm';
+
+export default function LoginPage() {
+    const handleLogin = (e) => {
+        e.preventDefault();
+        // Handle login logic
+    };
+
+    return (
+        <AuthTemplate>
+            <LoginForm onSubmit={handleLogin} />
+        </AuthTemplate>
+    );
+}
+```
+</TabItem>
+</Tabs>
+
+## Benefits of Atomic Design
+
+- **Consistency**: Reusing components ensures a consistent look and feel across your application
+- **Scalability**: Building from small to large makes it easier to manage growing projects
+- **Maintainability**: Changes to atoms automatically propagate to all components using them
+- **Communication**: Provides a shared vocabulary for designers and developers
+- **Efficiency**: Speeds up development by reusing tested, reliable components
+
+## Tools and Resources
+
+<CardGrid stagger>
+    <Card title="Pattern Lab" icon="seti:html">
+        A static site generator for building atomic design systems. Created by Brad Frost, it's the original tool for implementing this methodology.
+    </Card>
+    <Card title="Storybook" icon="seti:javascript">
+        Build and document your components in isolation. Perfect for showcasing your atomic design system to your team.
+    </Card>
+    <Card title="Figma" icon="seti:config">
+        Design your atomic components and maintain consistency between design and development with shared component libraries.
+    </Card>
+</CardGrid>
+
+---
+
+:::tip[Ready to Start?]
+Begin by auditing your current interface and identifying your atoms. Build up from there, and remember: Atomic Design is a mental model to help you think about your interface systematically. Adapt it to fit your needs!
+:::

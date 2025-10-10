@@ -1,5 +1,5 @@
 ---
-title: "Design Patterns"
+title: "Overview"
 description: "Proven solutions to common problems in software development."
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: Creational Patterns
+title: Overview
 description: Design Patterns for object creation.
 ---
 
