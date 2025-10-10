@@ -1,0 +1,49 @@
+---
+import Default from '@astrojs/starlight/components/TableOfContents.astro';
+import ReysinLogo from "../assets/reysin-logo.png"
+import Image from 'astro/components/Image.astro';
+---
+
+<!-- TODO: Activate when enterprise website finished -->
+<!--<div class="enterprise-branding">-->
+<!--    <a href="https://reysin.fr" target="_blank" rel="noopener noreferrer" class="enterprise-link">-->
+<!--        <Image src={ReysinLogo} alt="Your Company" class="enterprise-logo" />-->
+<!--        <p class="enterprise-text">Made by REYSIN</p>-->
+<!--    </a>-->
+<!--</div>-->
+
+<Default {...Astro.props} />
+
+<style>
+    .enterprise-branding {
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 0.5rem;
+    }
+
+    .enterprise-logo {
+        height: 100%;
+        max-height: 6rem;
+        width: auto;
+        display: block;
+    }
+
+    .enterprise-text {
+        font-size: 0.875rem;
+        color: var(--sl-color-gray-2);
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .enterprise-branding a {
+        text-decoration: none;
+        transition: opacity 0.2s;
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+
+    .enterprise-branding a:hover {
+        opacity: 0.8;
+    }
+</style>

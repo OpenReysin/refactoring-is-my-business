@@ -28,6 +28,10 @@ export default defineConfig({
                     href: "https://github.com/OpenReysin/refactoring-is-my-business",
                 },
             ],
+
+            components: {
+                TableOfContents: './src/components/CustomTableOfContents.astro',
+            },
             sidebar: [
                 {
                     label: "Getting Starred",
