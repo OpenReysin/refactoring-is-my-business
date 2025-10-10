@@ -4,8 +4,6 @@ import starlight from "@astrojs/starlight";
 import {defineConfig} from "astro/config";
 import starlightThemeRapide from "starlight-theme-rapide";
 
-import d2 from "astro-d2";
-
 // https://astro.build/config
 export default defineConfig({
     site: 'https://refactoring-is-my-business.com',
