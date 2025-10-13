@@ -1,0 +1,192 @@
+---
+title: Files d'Attente - Communication Asynchrone avec les Files de Messages
+description: Découvrez les files de messages (MQ), leurs cas d'utilisation et comment les implémenter dans différents langages.
+---
+import { Card, CardGrid, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+# Files d'Attente - Files de Messages (MQ)
+
+Les **files de messages (MQ)** sont une forme de communication asynchrone utilisée pour permettre aux systèmes distribués de communiquer et de traiter les tâches efficacement. Les files aident à **découpler** les composants, améliorent la **scalabilité** et renforcent la **tolérance aux pannes**.
+
+---
+
+## **Concepts Clés des Files d'Attente**
+
+<CardGrid>
+    <Card title="Producteur" icon="send">
+        Envoie des messages à la file d'attente.
+    </Card>
+    <Card title="Consommateur" icon="receive">
+        Reçoit et traite les messages de la file d'attente.
+    </Card>
+    <Card title="Broker" icon="server">
+        Gère la file d'attente et assure la livraison des messages aux consommateurs.
+    </Card>
+    <Card title="Message" icon="message">
+        Les données envoyées du producteur au consommateur.
+    </Card>
+</CardGrid>
+
+---
+
+## **Cas d'Utilisation des Files d'Attente**
+
+- **Traitement Asynchrone** : Déléguer les tâches longues aux travailleurs en arrière-plan.
+- **Découplage** : Séparer les composants pour qu'ils puissent évoluer indépendamment.
+- **Nivellement de Charge** : Lisser les pics de trafic en mettant en mémoire tampon les requêtes.
+- **Tolérance aux Pannes** : Assurer que les messages ne sont pas perdus si un composant tombe en panne.
+
+---
+
+## **Files d'Attente dans Différents Langages**
+
+<Tabs>
+    <TabItem label="Python (RabbitMQ)" icon="python">
+        ```python
+        # Producteur
+        import pika
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue='hello')
+
+        channel.basic_publish(exchange='', routing_key='hello', body='Bonjour, RabbitMQ !')
+        print(" [x] Envoyé 'Bonjour, RabbitMQ!'")
+        connection.close()
+
+        # Consommateur
+        import pika
+
+        def callback(ch, method, properties, body):
+        print(f" [x] Reçu {body}")
+
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        channel.queue_declare(queue='hello')
+        channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+
+        print(' [*] En attente de messages. Pour quitter, appuyez sur CTRL+C')
+        channel.start_consuming()
+        ```
+    </TabItem>
+
+    <TabItem label="Java (Apache Kafka)" icon="java">
+        ```java
+        // Producteur
+        import org.apache.kafka.clients.producer.*;
+
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        producer.send(new ProducerRecord<>("test-topic", "key", "Bonjour, Kafka !"));
+            producer.close();
+
+            // Consommateur
+            import org.apache.kafka.clients.consumer.*;
+
+            Properties props = new Properties();
+            props.put("bootstrap.servers", "localhost:9092");
+            props.put("group.id", "test-group");
+            props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+            props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+            Consumer<String, String> consumer = new KafkaConsumer<>(props);
+                consumer.subscribe(Collections.singletonList("test-topic"));
+
+                while (true) {
+                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                    for (ConsumerRecord<String, String> record : records) {
+                    System.out.printf("offset = %d, key = %s, value = %s%n", record.offset(), record.key(), record.value());
+                }
+                }
+                ```
+    </TabItem>
+
+    <TabItem label="C# (Azure Service Bus)" icon="csharp">
+        ```csharp
+        // Producteur
+        using Azure.Messaging.ServiceBus;
+
+        string connectionString = "Endpoint=sb://votre-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=votre-clé";
+        string queueName = "test-queue";
+
+        ServiceBusClient client = new ServiceBusClient(connectionString);
+        ServiceBusSender sender = client.CreateSender(queueName);
+
+        ServiceBusMessage message = new ServiceBusMessage("Bonjour, Azure Service Bus !");
+        await sender.SendMessageAsync(message);
+        await sender.DisposeAsync();
+        await client.DisposeAsync();
+
+        // Consommateur
+        using Azure.Messaging.ServiceBus;
+
+        string connectionString = "Endpoint=sb://votre-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=votre-clé";
+        string queueName = "test-queue";
+
+        ServiceBusClient client = new ServiceBusClient(connectionString);
+        ServiceBusProcessor processor = client.CreateProcessor(queueName);
+
+        processor.ProcessMessageAsync += MessageHandler;
+        processor.ProcessErrorAsync += ErrorHandler;
+
+        async Task MessageHandler(ProcessMessageEventArgs args)
+        {
+            string body = args.Message.Body.ToString();
+            Console.WriteLine(\$"Reçu : {body}");
+            await args.CompleteMessageAsync(args.Message);
+        }
+
+        Task ErrorHandler(ProcessErrorEventArgs args)
+        {
+            Console.WriteLine(args.Exception.ToString());
+            return Task.CompletedTask;
+        }
+
+        await processor.StartProcessingAsync();
+        Console.WriteLine("En attente de messages...");
+        Console.ReadLine();
+        await processor.DisposeAsync();
+        await client.DisposeAsync();
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## **Files d'Attente pour Débutants**
+
+<Aside type="tip">
+    - Commencez par un système de file d'attente simple comme **RabbitMQ** ou **Redis Pub/Sub**.
+    - Comprenez la différence entre les **producteurs** et les **consommateurs**.
+    - Utilisez les files d'attente pour déléguer les tâches chronophages à des travailleurs en arrière-plan.
+</Aside>
+
+---
+
+## **Files d'Attente pour Développeurs Expérimentés**
+
+<Aside type="tip">
+    - Explorez des systèmes de files d'attente avancés comme **Apache Kafka** ou **Azure Service Bus**.
+    - Implémentez la **persistance des messages** et les **mécanismes d'accusé de réception** pour une meilleure fiabilité.
+    - Envisagez d'utiliser des **files de lettres mortes** pour gérer les messages échoués de manière élégante.
+</Aside>
+
+---
+
+## **Avantages et Inconvénients des Files d'Attente**
+
+| Avantages | Inconvénients |
+|-----------|----------------|
+| Découple les composants et améliore la scalabilité | Ajoute de la complexité au système |
+| Renforce la tolérance aux pannes et la fiabilité | Nécessite une infrastructure supplémentaire |
+| Permet un traitement asynchrone | Peut introduire de la latence |
+
+---
+
+## **Prochaines Étapes**
+- Configurez un système de file d'attente simple comme **RabbitMQ** ou **Redis**.
+- Expérimentez avec la production et la consommation de messages dans votre langage préféré.

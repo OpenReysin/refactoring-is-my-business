@@ -1,0 +1,145 @@
+---
+title: Injection de Dépendances (DI) - Gérer les Dépendances Efficacement
+description: Découvrez l'Injection de Dépendances (DI), ses types et comment l'implémenter dans différents langages.
+---
+import { Card, CardGrid, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+# Injection de Dépendances (DI)
+
+L'**Injection de Dépendances (DI)** est un modèle de conception et une forme d'**Inversion de Contrôle (IoC)** où un objet reçoit ses dépendances d'une source externe plutôt que de les créer lui-même. La DI favorise le **couplage lâche**, la **testabilité** et la **modularité**.
+
+---
+
+## **Types d'Injection de Dépendances**
+
+<CardGrid>
+    <Card title="Injection par Constructeur" icon="code">
+        Les dépendances sont fournies via le constructeur de la classe.
+    </Card>
+    <Card title="Injection par Setter" icon="settings">
+        Les dépendances sont fournies via des méthodes de type setter.
+    </Card>
+    <Card title="Injection par Interface" icon="interface">
+        Les dépendances sont fournies via une méthode d'interface.
+    </Card>
+</CardGrid>
+
+---
+
+## **Comment Fonctionne la DI**
+
+1. **Définir les Dépendances** : Identifier les dépendances dont une classe a besoin.
+2. **Injecter les Dépendances** : Fournir ces dépendances à partir d'une source externe (par exemple, un conteneur DI).
+3. **Utiliser les Dépendances** : La classe utilise les dépendances injectées sans savoir comment elles sont créées.
+
+---
+
+## **DI dans Différents Langages**
+
+<Tabs>
+    <TabItem label="Java (Spring)" icon="java">
+        ```java
+        // Injection par Constructeur
+        @Service
+        public class UserService {
+        private final UserRepository userRepository;
+
+        @Autowired
+        public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    }
+
+        // Injection par Setter
+        @Service
+        public class UserService {
+        private UserRepository userRepository;
+
+        @Autowired
+        public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+    }
+        ```
+    </TabItem>
+
+    <TabItem label="C# (.NET Core)" icon="csharp">
+        ```csharp
+        // Injection par Constructeur
+        public class UserService
+        {
+            private readonly IUserRepository _userRepository;
+
+            public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+        }
+
+        // Enregistrement des Dépendances dans Startup.cs
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<UserService>();
+        }
+        ```
+    </TabItem>
+
+    <TabItem label="JavaScript (NestJS)" icon="javascript">
+        ```javascript
+        // Injection par Constructeur
+        @Controller('users')
+        export class UserController {
+        constructor(private userService: UserService) {}
+
+        @Get()
+        findAll() {
+        return this.userService.findAll();
+    }
+    }
+
+        // Enregistrement des Dépendances dans un Module
+        @Module({
+        providers: [UserService, UserRepository],
+        controllers: [UserController],
+    })
+        export class AppModule {}
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## **DI pour Débutants**
+
+<Aside type="tip">
+    - Commencez par l'**injection par constructeur**, car elle est la plus simple et la plus utilisée.
+    - Utilisez un conteneur DI pour gérer automatiquement les dépendances.
+    - Concentrez-vous sur la manière dont la DI rend votre code plus testable et modulaire.
+</Aside>
+
+---
+
+## **DI pour Développeurs Expérimentés**
+
+<Aside type="tip">
+    - Explorez la **gestion du cycle de vie** (par exemple, transitoire, scopée, singleton) dans les conteneurs DI.
+    - Utilisez la DI pour gérer les **préoccupations transversales** comme la journalisation, la mise en cache et la sécurité.
+    - Envisagez d'utiliser l'**injection par propriété** ou l'**injection par méthode** pour des scénarios avancés.
+</Aside>
+
+---
+
+## **Avantages et Inconvénients de la DI**
+
+| Avantages | Inconvénients |
+|-----------|----------------|
+| Réduit le couplage entre les composants | Peut introduire de la complexité si mal utilisé |
+| Rend les applications plus testables et modulaires | Nécessite l'apprentissage d'un framework ou conteneur DI |
+| Facilite le changement d'implémentations | Peut conduire à un comportement "magique" si utilisé sans précaution |
+
+---
+
+## **Prochaines Étapes**
+- Refactorisez un petit projet pour utiliser la DI et observez les avantages.
+- Expérimentez avec différents types de DI (constructeur, setter, interface).
