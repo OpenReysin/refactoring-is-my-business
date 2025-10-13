@@ -104,6 +104,20 @@ export default defineConfig({
                         },
                     ]
                 },
+                {
+                    label: 'Demo',
+                    link: '/demo/',
+                    icon: 'rocket',
+                    items: [
+                        {
+                            label: "Getting Starred",
+                            translations: {
+                                fr: "Pour Commencer",
+                            },
+                            slug: "demo",
+                        },
+                    ]
+                },
             ])
         ],
         title: "Refactoring Is My Business",
