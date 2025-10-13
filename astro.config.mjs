@@ -6,6 +6,7 @@ import starlightThemeRapide from "starlight-theme-rapide";
 import starlightAutoSidebar from 'starlight-auto-sidebar'
 import starlightGiscus from 'starlight-giscus'
 import starlightLinksValidator from 'starlight-links-validator'
+import starlightSidebarTopics from 'starlight-sidebar-topics'
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,7 +26,71 @@ export default defineConfig({
                 lazy: true,
                 reactions: true
             }),
-            starlightLinksValidator()
+            starlightLinksValidator(),
+            starlightSidebarTopics([
+                {
+                    label: 'Guides',
+                    link: '/guides/',
+                    icon: 'open-book',
+                    items: [
+                        {
+                            label: "Getting Starred",
+                            translations: {
+                                fr: "Pour Commencer",
+                            },
+                            slug: "guides",
+                        },
+                        {
+                            label: "How to Contribute",
+                            translations: {
+                                fr: "Comment contribuer"
+                            },
+                            slug: "guides/contribute",
+                        },
+                        {
+                            label: "Principes",
+                            translations: {
+                                fr: "Principes",
+                            },
+                            autogenerate: {
+                                directory: "guides/principles",
+                            },
+                        },
+                        {
+                            label: "Design Patterns",
+                            translations: {
+                                fr: "Design Patterns",
+                            },
+                            autogenerate: {
+                                directory: "guides/design-patterns",
+                            }
+                        },
+                        {
+                            label: "Useful libraries",
+                            translations: {
+                                fr: "Librairies Utiles",
+                            },
+                            autogenerate: {
+                                directory: "guides/useful-libraries",
+                            }
+                        }
+                    ],
+                },
+                {
+                    label: 'Exercices',
+                    link: '/exercices/',
+                    icon: 'pencil',
+                    items: [
+                        {
+                            label: "Getting Starred",
+                            translations: {
+                                fr: "Pour Commencer",
+                            },
+                            slug: "exercices",
+                        },
+                    ]
+                }
+            ])
         ],
         title: "Refactoring Is My Business",
         customCss: [
@@ -47,87 +112,8 @@ export default defineConfig({
         components: {
             TableOfContents: './src/components/CustomTableOfContents.astro',
             Pagination: './src/components/CustomPagination.astro',
+            Sidebar: './src/components/CustomSidebar.astro',
         },
-        sidebar: [
-            {
-                label: "Getting Starred",
-                translations: {
-                    fr: "Pour Commencer",
-                },
-                slug: "getting-started",
-            },
-            {
-                label: "How to Contribute",
-                translations: {
-                    fr: "Comment contribuer"
-                },
-                slug: "contribute",
-            },
-            {
-                label: "Principes",
-                translations: {
-                    fr: "Principes",
-                },
-                autogenerate: {
-                    directory: "principles",
-                },
-            },
-            // {
-            //     label: "Design Patterns",
-            //     translations: {
-            //         fr: "Design Patterns",
-            //     },
-            //     items: [
-            //         {
-            //             slug: "design-patterns",
-            //         },
-            //         {
-            //             label: "Creational Patterns",
-            //             translations: {
-            //                 fr: "Creational Patterns",
-            //             },
-            //             autogenerate: {
-            //                 directory: "design-patterns/creational",
-            //             },
-            //         },
-            //         {
-            //             label: "Structural Patterns",
-            //             translations: {
-            //                 fr: "Structural Patterns",
-            //             },
-            //             autogenerate: {
-            //                 directory: "design-patterns/structural",
-            //             },
-            //         },
-            //         {
-            //             label: "Behavioral Patterns",
-            //             translations: {
-            //                 fr: "Behavioral Patterns",
-            //             },
-            //             autogenerate: {
-            //                 directory: "design-patterns/behavioral",
-            //             },
-            //         }
-            //     ]
-            {
-                label: "Design Patterns",
-                translations: {
-                    fr: "Design Patterns",
-                },
-                autogenerate: {
-                    directory: "design-patterns",
-                }
-            },
-            {
-                label: "Useful libraries",
-                translations: {
-                    fr: "Librairies Utiles",
-                },
-                autogenerate: {
-                    directory: "useful-libraries",
-                }
-            }
-        ],
         defaultLocale: "root",
         locales: {
             root: {
