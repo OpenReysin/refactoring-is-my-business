@@ -7,6 +7,7 @@ import starlightGiscus from 'starlight-giscus'
 import starlightLinksValidator from 'starlight-links-validator'
 import starlightSidebarTopics from 'starlight-sidebar-topics'
 import starlightThemeRapide from "starlight-theme-rapide";
+import starlightLlmsTxt from "starlight-llms-txt";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,6 +16,9 @@ export default defineConfig({
 
     integrations: [starlight({
         plugins: [
+            starlightLlmsTxt({
+                projectName: 'Refactoring is my business..And business is good !'
+            }),
             starlightAutoSidebar(),
             starlightThemeRapide(),
             starlightGiscus({
