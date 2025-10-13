@@ -15,6 +15,7 @@ export default defineConfig({
 
     integrations: [starlight({
         plugins: [
+            starlightAutoSidebar(),
             starlightThemeRapide(),
             starlightGiscus({
                 repo: 'OpenReysin/refactoring-is-my-business',
@@ -26,7 +27,6 @@ export default defineConfig({
                 reactions: true,
             }),
             starlightLinksValidator(),
-            starlightAutoSidebar(),
             starlightSidebarTopics([
                 {
                     label: 'Guides',

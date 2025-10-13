@@ -415,12 +415,16 @@ Let's build a complete login form using Atomic Design principles:
                 </button>
             );
         }
+        ```
 
+        ```jsx
         // atoms/Input.jsx
         export default function Input({ ...props }) {
             return <input className="input" {...props} />;
         }
+        ```
 
+        ```jsx
         // atoms/Label.jsx
         export default function Label({ children, ...props }) {
             return <label className="label" {...props}>{children}</label>;
