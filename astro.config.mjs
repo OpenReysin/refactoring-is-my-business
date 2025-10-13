@@ -4,6 +4,8 @@ import starlight from "@astrojs/starlight";
 import {defineConfig} from "astro/config";
 import starlightThemeRapide from "starlight-theme-rapide";
 import starlightAutoSidebar from 'starlight-auto-sidebar'
+import starlightGiscus from 'starlight-giscus'
+import starlightLinksValidator from 'starlight-links-validator'
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,7 +13,20 @@ export default defineConfig({
     output: "static",
 
     integrations: [starlight({
-        plugins: [starlightThemeRapide(), starlightAutoSidebar()],
+        plugins: [
+            starlightThemeRapide(),
+            starlightAutoSidebar(),
+            starlightGiscus({
+                repo: 'OpenReysin/refactoring-is-my-business',
+                repoId: 'R_kgDOP2xpFw',
+                category: 'Polls',
+                categoryId: 'DIC_kwDOP2xpF84CwlCT',
+                mapping: 'pathname',
+                lazy: true,
+                reactions: true
+            }),
+            starlightLinksValidator()
+        ],
         title: "Refactoring Is My Business",
         customCss: [
             "/src/assets/global.css",
@@ -31,6 +46,7 @@ export default defineConfig({
 
         components: {
             TableOfContents: './src/components/CustomTableOfContents.astro',
+            Pagination: './src/components/CustomPagination.astro',
         },
         sidebar: [
             {
@@ -39,6 +55,13 @@ export default defineConfig({
                     fr: "Pour Commencer",
                 },
                 slug: "getting-started",
+            },
+            {
+                label: "How to Contribute",
+                translations: {
+                    fr: "Comment contribuer"
+                },
+                slug: "contribute",
             },
             {
                 label: "Principes",

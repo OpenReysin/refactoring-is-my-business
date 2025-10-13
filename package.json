@@ -17,7 +17,10 @@
 		"sharp": "^0.34.2",
 		"starlight-auto-sidebar": "^0.1.2",
 		"starlight-contributor-list": "^0.3.0",
-		"starlight-theme-rapide": "^0.5.1"
+		"starlight-giscus": "^0.8.0",
+		"starlight-links-validator": "^0.18.0",
+		"starlight-theme-rapide": "^0.5.1",
+		"zod": "^4.1.12"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4"
