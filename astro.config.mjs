@@ -77,6 +77,20 @@ export default defineConfig({
                     ],
                 },
                 {
+                    label: "Courses",
+                    link: '/courses/',
+                    icon: 'seti:notebook',
+                    items: [
+                        {
+                            label: "Getting Starred",
+                            translations: {
+                                fr: "Pour Commencer",
+                            },
+                            slug: "courses",
+                        },
+                    ]
+                },
+                {
                     label: 'Exercices',
                     link: '/exercices/',
                     icon: 'pencil',
@@ -89,7 +103,7 @@ export default defineConfig({
                             slug: "exercices",
                         },
                     ]
-                }
+                },
             ])
         ],
         title: "Refactoring Is My Business",
