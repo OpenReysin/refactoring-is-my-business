@@ -1,0 +1,103 @@
+---
+title: Effective Code Review - Best Practices for Better Code
+description: Learn how to conduct effective code reviews to improve code quality and team collaboration.
+---
+import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+
+# Effective Code Review
+
+Code review is a **critical practice** for maintaining code quality, sharing knowledge, and fostering collaboration. When done well, it improves the overall health of your codebase and helps teams grow.
+
+---
+
+## Why Code Review Matters
+
+- **Improves code quality**: Catches bugs, security issues, and anti-patterns early.
+- **Shares knowledge**: Helps team members learn from each other.
+- **Encourages consistency**: Ensures the codebase follows established standards.
+- **Builds team cohesion**: Fosters collaboration and communication.
+
+---
+
+## Best Practices for Code Review
+
+<CardGrid>
+    <Card title="Be Kind and Respectful" icon="heart">
+        Focus on the code, not the person. Use constructive language.
+    </Card>
+    <Card title="Review Small Changes" icon="git-pull-request">
+        Smaller pull requests are easier to review and less overwhelming.
+    </Card>
+    <Card title="Automate What You Can" icon="robot">
+        Use linters, formatters, and CI tools to catch simple issues automatically.
+    </Card>
+    <Card title="Explain Your Reasoning" icon="comment">
+        Provide clear, actionable feedback with context.
+    </Card>
+</CardGrid>
+
+---
+
+## Code Review Checklist
+
+<Tabs>
+    <TabItem label="Functionality">
+        - Does the code work as intended?
+        - Are there edge cases that aren’t handled?
+        - Are there any logical errors?
+    </TabItem>
+    <TabItem label="Readability">
+        - Is the code easy to understand?
+        - Are variable and function names clear?
+        - Is the code well-organized?
+    </TabItem>
+    <TabItem label="Performance">
+        - Are there any obvious performance issues?
+        - Can the code be optimized?
+    </TabItem>
+    <TabItem label="Security">
+        - Are there any security vulnerabilities?
+        - Are inputs validated and sanitized?
+    </TabItem>
+    <TabItem label="Testing">
+        - Are there sufficient tests?
+        - Do the tests cover edge cases?
+    </TabItem>
+</Tabs>
+
+---
+
+## Tools for Code Review
+
+<CardGrid>
+    <Card title="GitHub Pull Requests" icon="github">
+        Review and discuss code changes directly in your repository.
+    </Card>
+    <Card title="GitLab Merge Requests" icon="gitlab">
+        Collaborate on code changes with inline comments and discussions.
+    </Card>
+    <Card title="Phabricator" icon="phabricator">
+        A dedicated code review tool with advanced features.
+    </Card>
+    <Card title="SonarQube" icon="sonarqube">
+        Automatically analyze code quality and security.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+- **Nitpicking**: Focus on meaningful improvements, not personal preferences.
+- **Blocking for minor issues**: Don’t hold up merges for small, non-critical changes.
+- **Not explaining feedback**: Always provide context for your suggestions.
+- **Ignoring feedback**: Reviewers and authors should engage in discussion.
+
+---
+
+## Next Steps
+
+- Establish a **code review culture** in your team.
+- Use **automated tools** to catch simple issues.
+- Keep pull requests **small and focused**.
+- Encourage **open discussion** and learning.

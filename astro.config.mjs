@@ -66,6 +66,18 @@ export default defineConfig({
                             }
                         },
                         {
+                            label: "Architecture",
+                            autogenerate: {
+                                directory: "guides/architecture"
+                            }
+                        },
+                        {
+                            label: "Workflow",
+                            autogenerate: {
+                                directory: "guides/workflow"
+                            }
+                        },
+                        {
                             label: "Useful libraries",
                             translations: {
                                 fr: "Librairies Utiles",

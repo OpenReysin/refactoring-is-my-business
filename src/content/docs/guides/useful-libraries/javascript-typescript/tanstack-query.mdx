@@ -1,0 +1,353 @@
+---
+title: TanStack Query - Powerful Asynchronous State Management
+description: The missing data-fetching library for web applications. Fetch, cache, and update data in your React, Vue, Solid, and Svelte applications.
+---
+
+![NPM Last Update](https://img.shields.io/npm/last-update/@tanstack/react-query)
+![NPM Downloads](https://img.shields.io/npm/dw/@tanstack/react-query)
+![NPM Version](https://img.shields.io/npm/v/@tanstack/react-query)
+
+**TanStack Query** (formerly React Query) is a powerful data-fetching and state management library that simplifies server state management in web applications. It provides caching, automatic refetching, background updates, and much more out of the box.
+
+---
+
+## 📦 Installation
+
+### React
+
+```bash
+npm install @tanstack/react-query
+# or
+yarn add @tanstack/react-query
+# or
+pnpm add @tanstack/react-query
+```
+
+### Vue
+
+```bash
+npm install @tanstack/vue-query
+```
+
+### Core (Framework Agnostic)
+
+```bash
+npm install @tanstack/query-core
+```
+
+---
+
+## 🔧 Basic Usage
+
+### React Setup
+
+```jsx
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <YourApp />
+    </QueryClientProvider>
+  );
+}
+```
+
+### Simple Query
+
+```jsx
+import { useQuery } from '@tanstack/react-query';
+
+function Users() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetch('/api/users').then(res => res.json())
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <ul>
+      {data.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Mutations
+
+```jsx
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+function CreateUser() {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (newUser) => {
+      return fetch('/api/users', {
+        method: 'POST',
+        body: JSON.stringify(newUser)
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    }
+  });
+
+  return (
+    <button onClick={() => mutation.mutate({ name: 'John Doe' })}>
+      Create User
+    </button>
+  );
+}
+```
+
+---
+
+## ✨ Advanced Features
+
+### Query Keys with Parameters
+
+```jsx
+function UserProfile({ userId }) {
+  const { data } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then(res => res.json())
+  });
+}
+```
+
+### Dependent Queries
+
+```jsx
+function UserPosts({ userId }) {
+  const { data: user } = useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then(res => res.json())
+  });
+
+  const { data: posts } = useQuery({
+    queryKey: ['posts', user?.id],
+    queryFn: () => fetch(`/api/posts?userId=${user.id}`).then(res => res.json()),
+    enabled: !!user // Only run when user exists
+  });
+}
+```
+
+### Parallel Queries
+
+```jsx
+function Dashboard() {
+  const users = useQuery({ queryKey: ['users'], queryFn: fetchUsers });
+  const posts = useQuery({ queryKey: ['posts'], queryFn: fetchPosts });
+  const comments = useQuery({ queryKey: ['comments'], queryFn: fetchComments });
+
+  // Or use useQueries for dynamic parallel queries
+  const results = useQueries({
+    queries: [
+      { queryKey: ['users'], queryFn: fetchUsers },
+      { queryKey: ['posts'], queryFn: fetchPosts }
+    ]
+  });
+}
+```
+
+### Infinite Queries
+
+```jsx
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+function Posts() {
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery({
+    queryKey: ['posts'],
+    queryFn: ({ pageParam = 1 }) =>
+      fetch(`/api/posts?page=${pageParam}`).then(res => res.json()),
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 1
+  });
+
+  return (
+    <>
+      {data?.pages.map((page, i) => (
+        <div key={i}>
+          {page.posts.map(post => (
+            <Post key={post.id} {...post} />
+          ))}
+        </div>
+      ))}
+      <button
+        onClick={() => fetchNextPage()}
+        disabled={!hasNextPage || isFetchingNextPage}
+      >
+        {isFetchingNextPage ? 'Loading more...' : 'Load More'}
+      </button>
+    </>
+  );
+}
+```
+
+### Optimistic Updates
+
+```jsx
+const mutation = useMutation({
+  mutationFn: updateUser,
+  onMutate: async (newUser) => {
+    await queryClient.cancelQueries({ queryKey: ['user', newUser.id] });
+
+    const previousUser = queryClient.getQueryData(['user', newUser.id]);
+
+    queryClient.setQueryData(['user', newUser.id], newUser);
+
+    return { previousUser };
+  },
+  onError: (err, newUser, context) => {
+    queryClient.setQueryData(
+      ['user', newUser.id],
+      context.previousUser
+    );
+  },
+  onSettled: (data, error, variables) => {
+    queryClient.invalidateQueries({ queryKey: ['user', variables.id] });
+  }
+});
+```
+
+### Prefetching
+
+```jsx
+const queryClient = useQueryClient();
+
+// Prefetch on hover
+function UserCard({ userId }) {
+  return (
+    <div
+      onMouseEnter={() => {
+        queryClient.prefetchQuery({
+          queryKey: ['user', userId],
+          queryFn: () => fetchUser(userId)
+        });
+      }}
+    >
+      User #{userId}
+    </div>
+  );
+}
+```
+
+---
+
+## 🎯 Vue.js Usage
+
+```vue
+<script setup>
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
+
+const { data, isLoading, error } = useQuery({
+  queryKey: ['users'],
+  queryFn: () => fetch('/api/users').then(res => res.json())
+});
+
+const queryClient = useQueryClient();
+
+const mutation = useMutation({
+  mutationFn: (newUser) => createUser(newUser),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  }
+});
+</script>
+
+<template>
+  <div v-if="isLoading">Loading...</div>
+  <div v-else-if="error">Error: {{ error.message }}</div>
+  <ul v-else>
+    <li v-for="user in data" :key="user.id">{{ user.name }}</li>
+  </ul>
+</template>
+```
+
+---
+
+## 📚 Best Practices
+
+- **Use Query Keys Wisely:** Structure query keys hierarchically for easy invalidation
+- **Implement Error Boundaries:** Handle errors gracefully in your UI
+- **Set Appropriate Stale Times:** Configure `staleTime` based on data freshness needs
+- **Use DevTools:** Install React Query DevTools for debugging
+- **Optimize Refetch Strategies:** Configure `refetchOnWindowFocus`, `refetchOnReconnect`
+- **Implement Retry Logic:** Customize retry behavior for failed requests
+- **Cache Time Management:** Set `cacheTime` appropriately to balance memory and UX
+- **Use Suspense Mode:** Leverage React Suspense for better loading states (React 18+)
+
+---
+
+## ⚙️ Configuration
+
+### Global Configuration
+
+```jsx
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+      retry: 3,
+      refetchOnWindowFocus: false
+    }
+  }
+});
+```
+
+### DevTools Integration (React)
+
+```bash
+npm install @tanstack/react-query-devtools
+```
+
+```jsx
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <YourApp />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
+}
+```
+
+---
+
+## 🆚 Key Features
+
+- ✅ Automatic caching and background updates
+- ✅ Automatic garbage collection
+- ✅ Window focus refetching
+- ✅ Polling/Realtime queries
+- ✅ Parallel and dependent queries
+- ✅ Mutations with optimistic updates
+- ✅ Infinite scroll/pagination
+- ✅ Request deduplication
+- ✅ Suspense and error boundaries support
+- ✅ DevTools for debugging
+- ✅ Framework agnostic core
+
+---
+
+## 📖 Official Documentation
+
+For more details, check out:
+- [TanStack Query Core Documentation](https://tanstack.com/query/latest)
+- [React Query Documentation](https://tanstack.com/query/latest/docs/react/overview)
+- [Vue Query Documentation](https://tanstack.com/query/latest/docs/vue/overview)

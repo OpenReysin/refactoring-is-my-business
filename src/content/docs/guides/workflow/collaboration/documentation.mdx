@@ -1,0 +1,83 @@
+---
+title: Documentation - Writing Clear and Useful Docs
+description: Learn how to write clear, maintainable documentation for your projects.
+---
+import { Card, CardGrid, Steps } from '@astrojs/starlight/components';
+
+# Documentation
+
+Good documentation is **essential** for maintaining a healthy codebase and onboarding new team members. It ensures that everyone understands how the code works, why decisions were made, and how to use it effectively.
+
+---
+
+## Why Documentation Matters
+
+- **Onboarding**: Helps new team members get up to speed quickly.
+- **Maintenance**: Makes it easier to understand and update code.
+- **Collaboration**: Ensures everyone is on the same page.
+- **Knowledge sharing**: Preserves institutional knowledge.
+
+---
+
+## Types of Documentation
+
+<CardGrid>
+    <Card title="Code Comments" icon="comment">
+        Explain complex logic or non-obvious decisions directly in the code.
+    </Card>
+    <Card title="README Files" icon="file">
+        Provide an overview of the project, setup instructions, and usage examples.
+    </Card>
+    <Card title="API Documentation" icon="api">
+        Document endpoints, parameters, and responses for APIs.
+    </Card>
+    <Card title="Architecture Decisions" icon="architecture">
+        Record why certain technical decisions were made (e.g., ADRs).
+    </Card>
+</CardGrid>
+
+---
+
+## Best Practices for Writing Documentation
+
+<Steps>
+    1. **Keep It Concise**
+    Avoid unnecessary details. Focus on what’s important for the reader.
+    2. **Update Regularly**
+    Documentation should evolve with the code. Outdated docs are worse than no docs.
+    3. **Use Examples**
+    Show how to use the code or feature with practical examples.
+    4. **Write for Your Audience**
+    Tailor the documentation to the intended readers (e.g., developers, end-users).
+    5. **Automate When Possible**
+    Use tools like JSDoc, Swagger, or Docusaurus to generate documentation automatically.
+</Steps>
+
+---
+
+## Tools for Documentation
+
+| Tool               | Purpose                                                                 |
+|--------------------|-------------------------------------------------------------------------|
+| **Markdown**       | Simple, readable format for writing documentation.                     |
+| **Docusaurus**     | Build and maintain open-source documentation websites.                |
+| **Swagger/OpenAPI**| Generate interactive API documentation.                               |
+| **JSDoc**          | Document JavaScript code with annotations.                            |
+| **Confluence**     | Collaborate on documentation with your team.                          |
+
+---
+
+## Common Mistakes to Avoid
+
+- **Outdated documentation**: Always update docs when the code changes.
+- **Overcomplicating**: Keep it simple and focused.
+- **Ignoring the audience**: Write for the people who will use the documentation.
+- **Lack of examples**: Show, don’t just tell.
+
+---
+
+## Next Steps
+
+- Start with a **README** for your project.
+- Use **automated tools** to generate and maintain documentation.
+- Encourage your team to **contribute to and review** documentation.

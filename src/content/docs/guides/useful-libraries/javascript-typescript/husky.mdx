@@ -1,0 +1,178 @@
+---
+title: Husky - Git Hooks Made Easy
+description: Modern native Git hooks made easy. Automate your workflow with pre-commit, pre-push, and other Git hooks.
+---
+
+![NPM Last Update](https://img.shields.io/npm/last-update/husky)
+![NPM Downloads](https://img.shields.io/npm/dw/husky)
+![NPM Version](https://img.shields.io/npm/v/husky)
+
+**Husky** is a tool that makes Git hooks easy to use and manage. It allows you to run scripts automatically before commits, pushes, and other Git operations, helping you enforce code quality, run tests, and maintain consistent standards across your team.
+
+---
+
+## 📦 Installation
+
+Install `husky` via npm, yarn, or pnpm:
+
+```bash
+npm install --save-dev husky
+# or
+yarn add --dev husky
+# or
+pnpm add --save-dev husky
+```
+
+---
+
+## 🔧 Basic Usage
+
+### 1. Initialize Husky
+
+```bash
+npx husky init
+```
+
+This creates a `.husky` directory with a sample pre-commit hook.
+
+### 2. Create Your First Hook
+
+Add a pre-commit hook to run linting:
+
+```bash
+echo "npm run lint" > .husky/pre-commit
+```
+
+### 3. Configure Package Scripts
+
+Add helpful scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "prepare": "husky",
+    "lint": "eslint .",
+    "test": "vitest run"
+  }
+}
+```
+
+---
+
+## ✨ Advanced Features
+
+### Multiple Hooks
+
+Create different hooks for different Git operations:
+
+```bash
+# Pre-commit: lint and format
+echo "npm run lint && npm run format" > .husky/pre-commit
+
+# Pre-push: run tests
+echo "npm test" > .husky/pre-push
+
+# Commit-msg: validate commit message
+echo "npx commitlint --edit $1" > .husky/commit-msg
+```
+
+### Bypass Hooks Temporarily
+
+Sometimes you need to skip hooks:
+
+```bash
+git commit --no-verify -m "emergency fix"
+```
+
+### Integration with lint-staged
+
+Combine Husky with lint-staged for optimal performance:
+
+```bash
+npm install --save-dev lint-staged
+```
+
+Add to `package.json`:
+
+```json
+{
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": ["eslint --fix", "prettier --write"],
+    "*.{json,md}": ["prettier --write"]
+  }
+}
+```
+
+Update `.husky/pre-commit`:
+
+```bash
+npx lint-staged
+```
+
+### Custom Hook Scripts
+
+Create more complex hooks with shell scripts:
+
+```bash
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run type checking
+npm run type-check || exit 1
+
+# Run tests for changed files
+npm run test:changed || exit 1
+
+echo "✅ All checks passed!"
+```
+
+---
+
+## 📚 Best Practices
+
+- **Keep Hooks Fast:** Only run checks on staged files to avoid slowing down commits
+- **Use lint-staged:** Process only changed files for better performance
+- **Document Your Hooks:** Add comments explaining what each hook does
+- **Team Alignment:** Ensure all team members understand and agree on hook policies
+- **Graceful Failures:** Provide clear error messages when hooks fail
+- **CI/CD Integration:** Run the same checks in your CI pipeline as backup
+
+---
+
+## 🎯 Common Use Cases
+
+### Enforce Code Quality
+
+```bash
+# .husky/pre-commit
+npm run lint
+npm run format:check
+npm run type-check
+```
+
+### Prevent Bad Commits
+
+```bash
+# .husky/commit-msg
+npx commitlint --edit $1
+```
+
+### Run Tests Before Push
+
+```bash
+# .husky/pre-push
+npm run test:coverage
+```
+
+### Automatic Dependency Updates
+
+```bash
+# .husky/post-merge
+npm install
+```
+
+---
+
+## 📖 Official Documentation
+
+For more details, check out the [Husky official documentation](https://typicode.github.io/husky/).

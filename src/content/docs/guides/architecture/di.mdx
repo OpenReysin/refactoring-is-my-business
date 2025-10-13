@@ -1,0 +1,144 @@
+---
+title: Dependency Injection (DI) - Managing Dependencies Effectively
+description: Learn about Dependency Injection (DI), its types, and how to implement it in different languages.
+---
+import { Card, CardGrid, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+**Dependency Injection (DI)** is a design pattern and a form of **Inversion of Control (IoC)** where an object receives its dependencies from an external source rather than creating them itself. DI promotes **loose coupling**, **testability**, and **modularity**.
+
+---
+
+## **Types of Dependency Injection**
+
+<CardGrid>
+  <Card title="Constructor Injection" icon="code">
+    Dependencies are provided through a class constructor.
+  </Card>
+  <Card title="Setter Injection" icon="settings">
+    Dependencies are provided through setter methods.
+  </Card>
+  <Card title="Interface Injection" icon="interface">
+    Dependencies are provided through an interface method.
+  </Card>
+</CardGrid>
+
+---
+
+## **How DI Works**
+
+1. **Define Dependencies**: Identify the dependencies a class needs.
+2. **Inject Dependencies**: Provide those dependencies from an external source (e.g., a DI container).
+3. **Use Dependencies**: The class uses the injected dependencies without knowing how they are created.
+
+---
+
+## **DI in Different Languages**
+
+<Tabs>
+  <TabItem label="Java (Spring)" icon="java">
+    ```java
+    // Constructor Injection
+    @Service
+    public class UserService {
+        private final UserRepository userRepository;
+
+        @Autowired
+        public UserService(UserRepository userRepository) {
+            this.userRepository = userRepository;
+        }
+    }
+
+    // Setter Injection
+    @Service
+    public class UserService {
+        private UserRepository userRepository;
+
+        @Autowired
+        public void setUserRepository(UserRepository userRepository) {
+            this.userRepository = userRepository;
+        }
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="C# (.NET Core)" icon="csharp">
+    ```csharp
+    // Constructor Injection
+    public class UserService
+    {
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+    }
+
+    // Registering Dependencies in Startup.cs
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<UserService>();
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="JavaScript (NestJS)" icon="javascript">
+    ```javascript
+    // Constructor Injection
+    @Controller('users')
+    export class UserController {
+        constructor(private userService: UserService) {}
+
+        @Get()
+        findAll() {
+            return this.userService.findAll();
+        }
+    }
+
+    // Registering Dependencies in a Module
+    @Module({
+        providers: [UserService, UserRepository],
+        controllers: [UserController],
+    })
+    export class AppModule {}
+    ```
+  </TabItem>
+</Tabs>
+
+---
+
+## **DI for Beginners**
+
+<Aside type="tip">
+  - Start with **constructor injection**, as it is the most straightforward and widely used.
+  - Use a DI container to manage dependencies automatically.
+  - Focus on how DI makes your code more testable and modular.
+</Aside>
+
+---
+
+## **DI for Experienced Developers**
+
+<Aside type="tip">
+  - Explore **lifetime management** (e.g., transient, scoped, singleton) in DI containers.
+  - Use DI to manage **cross-cutting concerns** like logging, caching, and security.
+  - Consider using **property injection** or **method injection** for advanced scenarios.
+</Aside>
+
+---
+
+## **Pros and Cons of DI**
+
+| Pros | Cons |
+|------|------|
+| Reduces coupling between components | Can introduce complexity if overused |
+| Makes applications more testable and modular | Requires learning a DI framework or container |
+| Easier to swap implementations | Can lead to "magic" behavior if not used carefully |
+
+---
+
+## **Next Steps**
+- Refactor a small project to use DI and observe the benefits.
+- Experiment with different types of DI (constructor, setter, interface).
+

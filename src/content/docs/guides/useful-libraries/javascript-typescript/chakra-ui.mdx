@@ -1,0 +1,631 @@
+---
+title: Chakra UI - Simple, Modular & Accessible Component Library
+description: A comprehensive React component library that provides accessible, reusable, and composable components for building modern applications.
+---
+
+![NPM Last Update](https://img.shields.io/npm/last-update/@chakra-ui/react)
+![NPM Downloads](https://img.shields.io/npm/dw/@chakra-ui/react)
+![NPM Version](https://img.shields.io/npm/v/@chakra-ui/react)
+
+**Chakra UI** is a simple, modular, and accessible component library that gives you the building blocks to build React applications with speed. It follows WAI-ARIA standards and provides a great developer experience with its intuitive API.
+
+---
+
+## 📦 Installation
+
+### React (v2)
+
+```bash
+npm install @chakra-ui/react @emotion/react @emotion/styled framer-motion
+# or
+yarn add @chakra-ui/react @emotion/react @emotion/styled framer-motion
+# or
+pnpm add @chakra-ui/react @emotion/react @emotion/styled framer-motion
+```
+
+### Next.js Setup
+
+```bash
+npm install @chakra-ui/next-js @chakra-ui/react @emotion/react @emotion/styled framer-motion
+```
+
+---
+
+## 🔧 Basic Usage
+
+### Provider Setup
+
+```jsx
+import { ChakraProvider } from '@chakra-ui/react';
+
+function App() {
+  return (
+    <ChakraProvider>
+      <YourApplication />
+    </ChakraProvider>
+  );
+}
+```
+
+### Simple Components
+
+```jsx
+import { Button, Box, Heading, Text } from '@chakra-ui/react';
+
+function Welcome() {
+  return (
+    <Box p={8} maxW="lg" borderWidth={1} borderRadius={8} boxShadow="lg">
+      <Heading mb={4}>Welcome to Chakra UI</Heading>
+      <Text mb={4}>
+        Build accessible React applications with speed
+      </Text>
+      <Button colorScheme="blue" size="lg">
+        Get Started
+      </Button>
+    </Box>
+  );
+}
+```
+
+### Responsive Styles
+
+```jsx
+import { Box, Text } from '@chakra-ui/react';
+
+function ResponsiveBox() {
+  return (
+    <Box
+      bg={{ base: 'red.200', md: 'blue.200', lg: 'green.200' }}
+      w={{ base: '100%', md: '80%', lg: '60%' }}
+      p={{ base: 4, md: 6, lg: 8 }}
+    >
+      <Text fontSize={{ base: 'sm', md: 'md', lg: 'lg' }}>
+        Responsive text and container
+      </Text>
+    </Box>
+  );
+}
+```
+
+---
+
+## ✨ Advanced Features
+
+### Custom Theme
+
+```jsx
+import { extendTheme, ChakraProvider } from '@chakra-ui/react';
+
+const theme = extendTheme({
+  colors: {
+    brand: {
+      50: '#e3f2f9',
+      100: '#c5e4f3',
+      200: '#a2d4ec',
+      300: '#7ac1e4',
+      400: '#47a9da',
+      500: '#0088cc',
+      600: '#007ab8',
+      700: '#006ba1',
+      800: '#005885',
+      900: '#003f5e'
+    }
+  },
+  fonts: {
+    heading: `'Inter', sans-serif`,
+    body: `'Inter', sans-serif`
+  },
+  components: {
+    Button: {
+      baseStyle: {
+        fontWeight: 'bold'
+      },
+      variants: {
+        solid: {
+          bg: 'brand.500',
+          color: 'white',
+          _hover: {
+            bg: 'brand.600'
+          }
+        }
+      }
+    }
+  }
+});
+
+function App() {
+  return (
+    <ChakraProvider theme={theme}>
+      <YourApp />
+    </ChakraProvider>
+  );
+}
+```
+
+### Forms with Validation
+
+```jsx
+import {
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  Input,
+  Button,
+  VStack
+} from '@chakra-ui/react';
+import { useState } from 'react';
+
+function ContactForm() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email.includes('@')) {
+      setError('Email is invalid');
+      return;
+    }
+    // Submit form
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <VStack spacing={4} align="stretch">
+        <FormControl isInvalid={!!error}>
+          <FormLabel>Email address</FormLabel>
+          <Input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {!error ? (
+            <FormHelperText>
+              We'll never share your email.
+            </FormHelperText>
+          ) : (
+            <FormErrorMessage>{error}</FormErrorMessage>
+          )}
+        </FormControl>
+        <Button type="submit" colorScheme="blue">
+          Submit
+        </Button>
+      </VStack>
+    </form>
+  );
+}
+```
+
+### Modal Dialog
+
+```jsx
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure
+} from '@chakra-ui/react';
+
+function ModalExample() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Button onClick={onOpen}>Open Modal</Button>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Your modal content goes here
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+}
+```
+
+### Dark Mode
+
+```jsx
+import { useColorMode, useColorModeValue, Button, Box } from '@chakra-ui/react';
+
+function ColorModeExample() {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const bg = useColorModeValue('white', 'gray.800');
+  const color = useColorModeValue('black', 'white');
+
+  return (
+    <Box bg={bg} color={color} p={8}>
+      <Button onClick={toggleColorMode}>
+        Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
+      </Button>
+    </Box>
+  );
+}
+```
+
+### Grid Layout
+
+```jsx
+import { Grid, GridItem, Box } from '@chakra-ui/react';
+
+function DashboardLayout() {
+  return (
+    <Grid
+      templateAreas={`
+        "header header"
+        "nav main"
+        "nav footer"
+      `}
+      gridTemplateRows={'60px 1fr 60px'}
+      gridTemplateColumns={'250px 1fr'}
+      h="100vh"
+      gap={4}
+    >
+      <GridItem area="header" bg="blue.500">
+        Header
+      </GridItem>
+      <GridItem area="nav" bg="gray.100">
+        Navigation
+      </GridItem>
+      <GridItem area="main" bg="white">
+        Main Content
+      </GridItem>
+      <GridItem area="footer" bg="gray.200">
+        Footer
+      </GridItem>
+    </Grid>
+  );
+}
+```
+
+### Toast Notifications
+
+```jsx
+import { Button, useToast } from '@chakra-ui/react';
+
+function ToastExample() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() =>
+        toast({
+          title: 'Account created.',
+          description: "We've created your account for you.",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+          position: 'top-right'
+        })
+      }
+    >
+      Show Toast
+    </Button>
+  );
+}
+```
+
+### Drawer Component
+
+```jsx
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Button,
+  useDisclosure
+} from '@chakra-ui/react';
+
+function DrawerExample() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Button onClick={onOpen}>Open Drawer</Button>
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Navigation</DrawerHeader>
+          <DrawerBody>
+            Drawer content goes here
+          </DrawerBody>
+          <DrawerFooter>
+            <Button variant="outline" mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme="blue">Save</Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </>
+  );
+}
+```
+
+---
+
+## 📚 Best Practices
+
+- **Use Style Props:** Leverage Chakra's style props for rapid prototyping
+- **Responsive Design:** Use array or object syntax for responsive styles
+- **Theme Consistently:** Define your design tokens in the theme
+- **Compose Components:** Build complex UIs from simple, reusable components
+- **Accessibility First:** Chakra components are accessible by default, maintain this
+- **Use Hooks:** Leverage built-in hooks like `useDisclosure`, `useColorMode`
+- **Optimize Performance:** Use `chakra factory` for custom components
+- **Follow Design Tokens:** Use theme tokens instead of hardcoded values
+
+---
+
+## 🎯 Common Use Cases
+
+### Authentication Form
+
+```jsx
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Heading,
+  Text,
+  Link
+} from '@chakra-ui/react';
+
+function LoginForm() {
+  return (
+    <Box maxW="md" mx="auto" mt={8} p={8} borderWidth={1} borderRadius={8}>
+      <Heading mb={6}>Sign In</Heading>
+      <Stack spacing={4}>
+        <FormControl>
+          <FormLabel>Email</FormLabel>
+          <Input type="email" placeholder="john@example.com" />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Password</FormLabel>
+          <Input type="password" placeholder="Enter password" />
+        </FormControl>
+        <Button colorScheme="blue" width="full">
+          Sign In
+        </Button>
+        <Text textAlign="center">
+          Don't have an account?{' '}
+          <Link color="blue.500">Sign Up</Link>
+        </Text>
+      </Stack>
+    </Box>
+  );
+}
+```
+
+### Data Table
+
+```jsx
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Badge
+} from '@chakra-ui/react';
+
+function UsersTable({ users }) {
+  return (
+    <TableContainer>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Name</Th>
+            <Th>Email</Th>
+            <Th>Status</Th>
+            <Th isNumeric>Age</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {users.map((user) => (
+            <Tr key={user.id}>
+              <Td>{user.name}</Td>
+              <Td>{user.email}</Td>
+              <Td>
+                <Badge colorScheme={user.active ? 'green' : 'red'}>
+                  {user.active ? 'Active' : 'Inactive'}
+                </Badge>
+              </Td>
+              <Td isNumeric>{user.age}</Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
+  );
+}
+```
+
+### Card with Image
+
+```jsx
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  Image,
+  Stack,
+  Heading,
+  Text,
+  Button,
+  Divider
+} from '@chakra-ui/react';
+
+function ProductCard({ product }) {
+  return (
+    <Card maxW="sm">
+      <CardBody>
+        <Image
+          src={product.image}
+          alt={product.name}
+          borderRadius="lg"
+        />
+        <Stack mt={6} spacing={3}>
+          <Heading size="md">{product.name}</Heading>
+          <Text>{product.description}</Text>
+          <Text color="blue.600" fontSize="2xl">
+            ${product.price}
+          </Text>
+        </Stack>
+      </CardBody>
+      <Divider />
+      <CardFooter>
+        <Button variant="solid" colorScheme="blue" w="full">
+          Add to cart
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+### Loading Skeleton
+
+```jsx
+import {
+  Stack,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Box
+} from '@chakra-ui/react';
+
+function LoadingCard() {
+  return (
+    <Box padding={6} boxShadow="lg" bg="white">
+      <SkeletonCircle size={10} />
+      <SkeletonText mt={4} noOfLines={4} spacing={4} skeletonHeight={2} />
+      <Skeleton height="40px" mt={4} />
+    </Box>
+  );
+}
+```
+
+---
+
+## 🎨 Component Categories
+
+### Layout
+- **Box, Flex, Grid, Stack:** Container components
+- **Container, Center, Square:** Positioning utilities
+- **Wrap, SimpleGrid:** Layout helpers
+
+### Forms
+- **Input, Textarea, Select:** Form inputs
+- **Checkbox, Radio, Switch:** Selection controls
+- **Slider, NumberInput:** Value inputs
+- **FormControl, FormLabel:** Form structure
+
+### Data Display
+- **Table, List, Tag:** Data presentation
+- **Card, Badge, Code:** Content display
+- **Stat, Kbd:** Specialized display
+
+### Feedback
+- **Alert, Toast, Progress:** User feedback
+- **Spinner, Skeleton:** Loading states
+- **CircularProgress:** Progress indicators
+
+### Overlay
+- **Modal, Drawer, Popover:** Overlay components
+- **Tooltip, Menu, AlertDialog:** Interactive overlays
+
+### Disclosure
+- **Accordion, Tabs:** Content organization
+- **Visually Hidden:** Accessibility
+
+### Navigation
+- **Breadcrumb, Link, LinkOverlay:** Navigation elements
+- **Stepper, SkipNavLink:** Navigation helpers
+
+---
+
+## 🚀 Performance Tips
+
+- **Use `chakra` factory for custom components:** Better performance than styled components
+- **Lazy load heavy components:** Use React.lazy for modals and drawers
+- **Optimize images:** Use Next.js Image or similar optimization
+- **Memoize expensive computations:** Use React.memo and useMemo
+- **Code splitting:** Split your theme and only load what you need
+
+---
+
+## 🔧 Next.js Integration
+
+```jsx
+// app/providers.jsx
+'use client';
+
+import { ChakraProvider } from '@chakra-ui/react';
+
+export function Providers({ children }) {
+  return <ChakraProvider>{children}</ChakraProvider>;
+}
+```
+
+```jsx
+// app/layout.jsx
+import { Providers } from './providers';
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+---
+
+## 🆚 Key Features
+
+- ✅ Accessible components following WAI-ARIA standards
+- ✅ Themeable and customizable design system
+- ✅ Responsive styles with mobile-first approach
+- ✅ Dark mode support out of the box
+- ✅ Composable component architecture
+- ✅ TypeScript support
+- ✅ Active community and regular updates
+- ✅ Excellent documentation
+- ✅ Built on Emotion for styling
+- ✅ Small bundle size with tree-shaking
+
+---
+
+## 📖 Official Documentation
+
+For more details, check out the [Chakra UI official documentation](https://chakra-ui.com/).

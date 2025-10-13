@@ -1,0 +1,134 @@
+---
+title: Inversion of Control (IoC) - Delegating Control to Frameworks
+description: Learn about Inversion of Control (IoC), its principles, and how it shifts control from the application code to a framework.
+---
+import { Card, CardGrid, Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+**Inversion of Control (IoC)** is a design principle where the control flow of a program is inverted compared to traditional procedural programming. Instead of the application code controlling the flow, an external framework or container manages it. IoC is often used to achieve **loose coupling** and **modularity** in software design.
+
+---
+
+## **Core Concepts of IoC**
+
+<CardGrid>
+    <Card title="Traditional Control Flow" icon="flow">
+        In traditional programming, the application code directly calls methods and controls the execution flow.
+    </Card>
+    <Card title="Inverted Control Flow" icon="sync">
+        With IoC, the framework or container controls the execution flow, calling the application code as needed.
+    </Card>
+    <Card title="Loose Coupling" icon="link">
+        IoC promotes loose coupling by removing direct dependencies between components.
+    </Card>
+</CardGrid>
+
+---
+
+## **How IoC Works**
+
+IoC shifts the responsibility of managing object creation and lifecycle from the application to a framework or container. This is often achieved through **Dependency Injection (DI)** or **Event-Driven Programming**.
+
+---
+
+## **IoC in Different Languages**
+
+<Tabs>
+    <TabItem label="Java (Spring Framework)" icon="java">
+        ```java
+        // Traditional Approach (Without IoC)
+        public class UserService {
+            private UserRepository userRepository = new UserRepository();
+        }
+
+        // With IoC (Using Spring)
+        public class UserService {
+            private UserRepository userRepository;
+
+            // Dependency is injected by Spring
+            public UserService(UserRepository userRepository) {
+                this.userRepository = userRepository;
+            }
+        }
+        ```
+    </TabItem>
+
+    <TabItem label="C# (.NET Core)" icon="csharp">
+        ```csharp
+        // Traditional Approach (Without IoC)
+        public class UserService
+        {
+            private UserRepository userRepository = new UserRepository();
+        }
+
+        // With IoC (Using .NET Core's DI Container)
+        public class UserService
+        {
+            private readonly UserRepository _userRepository;
+
+            // Dependency is injected by the DI container
+            public UserService(UserRepository userRepository)
+            {
+                _userRepository = userRepository;
+            }
+        }
+        ```
+    </TabItem>
+
+    <TabItem label="JavaScript (InversifyJS)" icon="javascript">
+        ```javascript
+        // Traditional Approach (Without IoC)
+        class UserService {
+            constructor() {
+                this.userRepository = new UserRepository();
+            }
+        }
+
+        // With IoC (Using InversifyJS)
+        const container = new Container();
+        container.bind("UserRepository").to(UserRepository);
+        container.bind("UserService").to(UserService);
+
+        class UserService {
+            constructor(@inject("UserRepository") userRepository) {
+                this.userRepository = userRepository;
+            }
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## **IoC for Beginners**
+
+<Aside type="tip">
+    - Start by understanding the difference between traditional control flow and IoC.
+    - Use a simple DI container to see how IoC works in practice.
+    - Focus on how IoC promotes modularity and reduces coupling.
+</Aside>
+
+---
+
+## **IoC for Experienced Developers**
+
+<Aside type="tip">
+    - Explore advanced IoC containers like **Spring**, **.NET Core DI**, or **InversifyJS**.
+    - Use IoC to manage cross-cutting concerns like logging, security, and transactions.
+    - Consider using IoC with **Aspect-Oriented Programming (AOP)** for even greater modularity.
+</Aside>
+
+---
+
+## **Pros and Cons of IoC**
+
+| Pros | Cons |
+|------|------|
+| Reduces coupling between components | Can introduce complexity if overused |
+| Makes applications more modular and testable | Requires learning a framework or container |
+| Easier to manage dependencies | Can lead to "magic" behavior if not used carefully |
+
+---
+
+## **Next Steps**
+- Experiment with a DI container in your preferred language.
+- Refactor a small project to use IoC and observe the benefits.
