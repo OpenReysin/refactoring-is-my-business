@@ -1,0 +1,842 @@
+---
+title: "Prototype - A Design Pattern for Object Cloning"
+description: "Learn the Prototype pattern for creating objects by cloning existing instances in TypeScript, Vue.js, Java, PHP, and Rust."
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+The **Prototype** is a **creational design pattern** that lets you copy existing objects without making your code dependent on their classes. It creates new objects by cloning existing prototypes rather than instantiating new ones.
+
+---
+
+## What is the Prototype Pattern?
+
+The Prototype pattern specifies the kinds of objects to create using a prototypical instance, and creates new objects by copying this prototype. This is particularly useful when object creation is costly or complex.
+
+---
+
+## Why Use a Prototype?
+
+### Common Use Cases
+<CardGrid>
+    <Card title="Complex Object Duplication" icon="duplicate">
+        Clone objects with complex initialization or configuration.
+    </Card>
+    <Card title="Performance Optimization" icon="rocket">
+        Avoid expensive initialization by cloning pre-configured objects.
+    </Card>
+    <Card title="Dynamic Object Creation" icon="lightning">
+        Create objects at runtime without knowing their concrete classes.
+    </Card>
+    <Card title="Snapshot/Memento" icon="camera">
+        Save object states for undo/redo functionality.
+    </Card>
+</CardGrid>
+
+### Advantages and Disadvantages
+| Advantages ✅ | Disadvantages ❌ |
+|--------------|----------------|
+| Reduces object creation cost. | Cloning complex objects with circular references is tricky. |
+| Avoids subclass proliferation. | Deep copying can be complex. |
+| Adds/removes objects at runtime. | Requires implementing clone method for each class. |
+| Specifies new objects by varying values. | Can be difficult with objects having private fields. |
+
+---
+
+## Shallow Copy vs Deep Copy
+
+Understanding the difference between shallow and deep copying is crucial:
+
+### Shallow Copy
+- Copies primitive values
+- Copies references to nested objects (not the objects themselves)
+- Changes to nested objects affect both original and clone
+
+### Deep Copy
+- Copies primitive values
+- Recursively copies all nested objects
+- Clone is completely independent of the original
+
+---
+
+## Examples in Different Languages
+
+<Tabs>
+    <TabItem label="TypeScript">
+        ```typescript
+        // Prototype Interface
+        interface Prototype {
+        clone(): Prototype;
+    }
+
+        // Concrete Prototype
+        class Shape implements Prototype {
+        x: number;
+        y: number;
+        color: string;
+
+        constructor(x: number, y: number, color: string) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
+
+        clone(): Shape {
+        return new Shape(this.x, this.y, this.color);
+    }
+
+        describe(): string {
+        return `Shape at (${this.x}, ${this.y}) with color ${this.color}`;
+    }
+    }
+
+        class Circle extends Shape {
+        radius: number;
+
+        constructor(x: number, y: number, color: string, radius: number) {
+        super(x, y, color);
+        this.radius = radius;
+    }
+
+        clone(): Circle {
+        return new Circle(this.x, this.y, this.color, this.radius);
+    }
+
+        describe(): string {
+        return `Circle at (${this.x}, ${this.y}) with radius ${this.radius} and color ${this.color}`;
+    }
+    }
+
+        // Usage
+        const originalCircle = new Circle(10, 20, "red", 5);
+        const clonedCircle = originalCircle.clone();
+
+        clonedCircle.x = 30;
+        clonedCircle.color = "blue";
+
+        console.log(originalCircle.describe());
+        // Circle at (10, 20) with radius 5 and color red
+
+        console.log(clonedCircle.describe());
+        // Circle at (30, 20) with radius 5 and color blue
+        ```
+    </TabItem>
+
+    <TabItem label="Java">
+        ```java
+        // Prototype Interface
+        interface Prototype extends Cloneable {
+        Prototype clone();
+    }
+
+        // Concrete Prototype
+        class Shape implements Prototype {
+        protected int x;
+        protected int y;
+        protected String color;
+
+        public Shape(int x, int y, String color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+    }
+
+        @Override
+        public Shape clone() {
+        return new Shape(this.x, this.y, this.color);
+    }
+
+        public String describe() {
+        return String.format("Shape at (%d, %d) with color %s", x, y, color);
+    }
+    }
+
+        class Circle extends Shape {
+        private int radius;
+
+        public Circle(int x, int y, String color, int radius) {
+        super(x, y, color);
+        this.radius = radius;
+    }
+
+        @Override
+        public Circle clone() {
+        return new Circle(this.x, this.y, this.color, this.radius);
+    }
+
+        @Override
+        public String describe() {
+        return String.format("Circle at (%d, %d) with radius %d and color %s",
+        x, y, radius, color);
+    }
+    }
+
+        // Usage
+        Circle originalCircle = new Circle(10, 20, "red", 5);
+        Circle clonedCircle = originalCircle.clone();
+
+        clonedCircle.x = 30;
+        clonedCircle.color = "blue";
+
+        System.out.println(originalCircle.describe());
+        System.out.println(clonedCircle.describe());
+        ```
+    </TabItem>
+
+    <TabItem label="PHP">
+        ```php
+        // Prototype Interface
+        interface PrototypeInterface {
+        public function clone(): self;
+    }
+
+        // Concrete Prototype
+        class Shape implements PrototypeInterface {
+        protected $x;
+        protected $y;
+        protected $color;
+
+        public function __construct(int $x, int $y, string $color) {
+        $this->x = $x;
+        $this->y = $y;
+        $this->color = $color;
+    }
+
+        public function clone(): self {
+        return new self($this->x, $this->y, $this->color);
+    }
+
+        public function describe(): string {
+        return sprintf("Shape at (%d, %d) with color %s",
+        $this->x, $this->y, $this->color);
+    }
+    }
+
+        class Circle extends Shape {
+        private $radius;
+
+        public function __construct(int $x, int $y, string $color, int $radius) {
+        parent::__construct($x, $y, $color);
+        $this->radius = $radius;
+    }
+
+        public function clone(): self {
+        return new self($this->x, $this->y, $this->color, $this->radius);
+    }
+
+        public function describe(): string {
+        return sprintf("Circle at (%d, %d) with radius %d and color %s",
+        $this->x, $this->y, $this->radius, $this->color);
+    }
+    }
+
+        // Usage
+        $originalCircle = new Circle(10, 20, "red", 5);
+        $clonedCircle = $originalCircle->clone();
+
+        echo $originalCircle->describe() . "\n";
+        echo $clonedCircle->describe() . "\n";
+        ```
+    </TabItem>
+
+    <TabItem label="Rust">
+        ```rust
+        // Prototype Trait
+        trait Prototype: Clone {
+        fn clone_prototype(&self) -> Self;
+    }
+
+        // Concrete Prototype
+        #[derive(Clone)]
+        struct Shape {
+        x: i32,
+        y: i32,
+        color: String,
+    }
+
+        impl Shape {
+        fn new(x: i32, y: i32, color: String) -> Self {
+        Shape { x, y, color }
+    }
+
+        fn describe(&self) -> String {
+        format!("Shape at ({}, {}) with color {}", self.x, self.y, self.color)
+    }
+    }
+
+        impl Prototype for Shape {
+        fn clone_prototype(&self) -> Self {
+        self.clone()
+    }
+    }
+
+        #[derive(Clone)]
+        struct Circle {
+        x: i32,
+        y: i32,
+        color: String,
+        radius: i32,
+    }
+
+        impl Circle {
+        fn new(x: i32, y: i32, color: String, radius: i32) -> Self {
+        Circle { x, y, color, radius }
+    }
+
+        fn describe(&self) -> String {
+        format!(
+        "Circle at ({}, {}) with radius {} and color {}",
+        self.x, self.y, self.radius, self.color
+        )
+    }
+    }
+
+        impl Prototype for Circle {
+        fn clone_prototype(&self) -> Self {
+        self.clone()
+    }
+    }
+
+        // Usage
+        fn main() {
+        let original_circle = Circle::new(10, 20, "red".to_string(), 5);
+        let mut cloned_circle = original_circle.clone_prototype();
+
+        cloned_circle.x = 30;
+        cloned_circle.color = "blue".to_string();
+
+        println!("{}", original_circle.describe());
+        println!("{}", cloned_circle.describe());
+    }
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Example in Vue.js
+
+### Prototype for Component State
+```typescript
+// ComponentStatePrototype.ts
+interface ComponentState {
+  clone(): ComponentState;
+}
+
+class FormState implements ComponentState {
+  fields: Map<string, any>;
+  isDirty: boolean;
+  errors: Map<string, string>;
+
+  constructor() {
+    this.fields = new Map();
+    this.isDirty = false;
+    this.errors = new Map();
+  }
+
+  clone(): FormState {
+    const cloned = new FormState();
+    cloned.fields = new Map(this.fields);
+    cloned.isDirty = this.isDirty;
+    cloned.errors = new Map(this.errors);
+    return cloned;
+  }
+
+  setField(name: string, value: any): void {
+    this.fields.set(name, value);
+    this.isDirty = true;
+  }
+
+  getField(name: string): any {
+    return this.fields.get(name);
+  }
+
+  setError(field: string, message: string): void {
+    this.errors.set(field, message);
+  }
+}
+
+export { FormState, ComponentState };
+```
+
+### Usage in Vue Component with Undo/Redo
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { FormState } from './ComponentStatePrototype';
+
+const currentState = ref(new FormState());
+const history = ref<FormState[]>([]);
+const historyIndex = ref(-1);
+
+const saveState = () => {
+  // Remove any forward history
+  history.value = history.value.slice(0, historyIndex.value + 1);
+
+  // Add current state to history
+  history.value.push(currentState.value.clone());
+  historyIndex.value++;
+};
+
+const updateField = (name: string, value: any) => {
+  saveState();
+  currentState.value.setField(name, value);
+};
+
+const undo = () => {
+  if (historyIndex.value > 0) {
+    historyIndex.value--;
+    currentState.value = history.value[historyIndex.value].clone();
+  }
+};
+
+const redo = () => {
+  if (historyIndex.value < history.value.length - 1) {
+    historyIndex.value++;
+    currentState.value = history.value[historyIndex.value].clone();
+  }
+};
+
+const canUndo = computed(() => historyIndex.value > 0);
+const canRedo = computed(() => historyIndex.value < history.value.length - 1);
+</script>
+
+<template>
+  <div>
+    <button @click="undo" :disabled="!canUndo">Undo</button>
+    <button @click="redo" :disabled="!canRedo">Redo</button>
+
+    <input
+      :value="currentState.getField('name')"
+      @input="updateField('name', ($event.target as HTMLInputElement).value)"
+      placeholder="Name"
+    />
+  </div>
+</template>
+```
+
+---
+
+## Real-World Example: Deep Cloning Complex Objects
+
+<Tabs>
+    <TabItem label="Deep Clone Implementation">
+        ```typescript
+        class Address {
+        street: string;
+        city: string;
+        country: string;
+
+        constructor(street: string, city: string, country: string) {
+        this.street = street;
+        this.city = city;
+        this.country = country;
+    }
+
+        clone(): Address {
+        return new Address(this.street, this.city, this.country);
+    }
+    }
+
+        class Person {
+        name: string;
+        age: number;
+        address: Address;
+        hobbies: string[];
+
+        constructor(name: string, age: number, address: Address, hobbies: string[]) {
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.hobbies = hobbies;
+    }
+
+        // Shallow clone - shares references
+        shallowClone(): Person {
+        return new Person(this.name, this.age, this.address, this.hobbies);
+    }
+
+        // Deep clone - completely independent
+        deepClone(): Person {
+        return new Person(
+        this.name,
+        this.age,
+        this.address.clone(),
+        [...this.hobbies]
+        );
+    }
+
+        describe(): string {
+        return `${this.name}, ${this.age} years old, lives in ${this.address.city}`;
+    }
+    }
+
+        // Usage - Demonstrating the difference
+        const originalAddress = new Address("123 Main St", "New York", "USA");
+        const originalPerson = new Person(
+        "John Doe",
+        30,
+        originalAddress,
+        ["reading", "gaming"]
+        );
+
+        // Shallow clone - address is shared
+        const shallowClone = originalPerson.shallowClone();
+        shallowClone.address.city = "Los Angeles";
+        console.log(originalPerson.describe());
+        // John Doe, 30 years old, lives in Los Angeles (MODIFIED!)
+
+        // Deep clone - address is independent
+        const deepClone = originalPerson.deepClone();
+        deepClone.address.city = "Chicago";
+        console.log(originalPerson.describe());
+        // John Doe, 30 years old, lives in Los Angeles (NOT MODIFIED)
+        console.log(deepClone.describe());
+        // John Doe, 30 years old, lives in Chicago
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Real-World Example: Prototype Registry
+
+<Tabs>
+    <TabItem label="Registry Pattern">
+        ```typescript
+        // Abstract Prototype
+        abstract class GameCharacter {
+        name: string;
+        health: number;
+        attack: number;
+        defense: number;
+
+        constructor(name: string, health: number, attack: number, defense: number) {
+        this.name = name;
+        this.health = health;
+        this.attack = attack;
+        this.defense = defense;
+    }
+
+        abstract clone(): GameCharacter;
+
+        describe(): string {
+        return `${this.name}: HP=${this.health}, ATK=${this.attack}, DEF=${this.defense}`;
+    }
+    }
+
+        // Concrete Prototypes
+        class Warrior extends GameCharacter {
+        constructor() {
+        super("Warrior", 150, 30, 25);
+    }
+
+        clone(): Warrior {
+        const cloned = new Warrior();
+        cloned.name = this.name;
+        cloned.health = this.health;
+        cloned.attack = this.attack;
+        cloned.defense = this.defense;
+        return cloned;
+    }
+    }
+
+        class Mage extends GameCharacter {
+        mana: number;
+
+        constructor() {
+        super("Mage", 80, 50, 10);
+        this.mana = 100;
+    }
+
+        clone(): Mage {
+        const cloned = new Mage();
+        cloned.name = this.name;
+        cloned.health = this.health;
+        cloned.attack = this.attack;
+        cloned.defense = this.defense;
+        cloned.mana = this.mana;
+        return cloned;
+    }
+
+        describe(): string {
+        return `${super.describe()}, MP=${this.mana}`;
+    }
+    }
+
+        class Archer extends GameCharacter {
+        constructor() {
+        super("Archer", 100, 40, 15);
+    }
+
+        clone(): Archer {
+        const cloned = new Archer();
+        cloned.name = this.name;
+        cloned.health = this.health;
+        cloned.attack = this.attack;
+        cloned.defense = this.defense;
+        return cloned;
+    }
+    }
+
+        // Prototype Registry
+        class CharacterRegistry {
+        private prototypes: Map<string, GameCharacter> = new Map();
+
+        registerPrototype(key: string, prototype: GameCharacter): void {
+        this.prototypes.set(key, prototype);
+    }
+
+        createCharacter(key: string): GameCharacter | undefined {
+        const prototype = this.prototypes.get(key);
+        return prototype ? prototype.clone() : undefined;
+    }
+
+        listAvailable(): string[] {
+        return Array.from(this.prototypes.keys());
+    }
+    }
+
+        // Usage
+        const registry = new CharacterRegistry();
+
+        // Register prototypes
+        registry.registerPrototype("warrior", new Warrior());
+        registry.registerPrototype("mage", new Mage());
+        registry.registerPrototype("archer", new Archer());
+
+        // Create characters from prototypes
+        const player1 = registry.createCharacter("warrior");
+        const player2 = registry.createCharacter("mage");
+        const player3 = registry.createCharacter("archer");
+
+        if (player1) console.log(player1.describe());
+        if (player2) console.log(player2.describe());
+        if (player3) console.log(player3.describe());
+
+        // Modify clones without affecting prototypes
+        if (player1) {
+        player1.name = "Player 1 Warrior";
+        player1.health = 200;
+    }
+
+        // Create another warrior - still has original stats
+        const player4 = registry.createCharacter("warrior");
+        if (player4) console.log(player4.describe());
+        // Warrior: HP=150, ATK=30, DEF=25
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Getting Started with Prototype
+
+<Steps>
+    1. **Identify Clonable Objects**
+    Find objects that are expensive to create or need to be duplicated.
+    2. **Create Prototype Interface**
+    Define a clone method in a common interface.
+    3. **Implement Clone Method**
+    Add cloning logic to each concrete class.
+    4. **Handle Deep vs Shallow**
+    Decide whether you need shallow or deep copying.
+    5. **Optional: Create Registry**
+    Build a registry to manage and retrieve prototypes.
+    6. **Test Cloning**
+    Verify that clones are independent of originals.
+</Steps>
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Use Deep Copy Carefully" icon="warning">
+        Deep copying can be expensive - use it only when necessary.
+    </Card>
+    <Card title="Handle Circular References" icon="refresh">
+        Implement safeguards against circular reference issues.
+    </Card>
+    <Card title="Consider Built-in Cloning" icon="approve-check">
+        Use language built-in cloning mechanisms when available.
+    </Card>
+    <Card title="Document Clone Behavior" icon="open-book">
+        Clearly document whether cloning is shallow or deep.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Shallow Copy Issues]
+Be aware that shallow copies share references to nested objects, which can lead to unintended modifications.
+:::
+
+:::caution[Forgetting to Clone Nested Objects]
+When implementing deep copy, ensure ALL nested objects are also cloned recursively.
+:::
+
+:::caution[Cloning with Circular References]
+Objects with circular references require special handling to avoid infinite loops.
+:::
+
+---
+
+## Cloning Strategies in JavaScript/TypeScript
+
+### Using Spread Operator (Shallow)
+```typescript
+const original = { name: "John", age: 30 };
+const clone = { ...original };
+```
+
+### Using Object.assign (Shallow)
+```typescript
+const clone = Object.assign({}, original);
+```
+
+### Using JSON (Deep, with limitations)
+```typescript
+// Limited: doesn't handle functions, dates, undefined, etc.
+const clone = JSON.parse(JSON.stringify(original));
+```
+
+### Using structuredClone (Deep, modern browsers)
+```typescript
+// Modern approach - handles most types
+const clone = structuredClone(original);
+```
+
+---
+
+## Prototype vs Factory Method
+
+| Prototype | Factory Method |
+|-----------|----------------|
+| Clones existing objects | Creates new objects from scratch |
+| Runtime object creation | Compile-time class selection |
+| Best for complex initialization | Best for simple instantiation |
+| Requires existing instance | Doesn't need existing instance |
+
+---
+
+## When to Use Prototype?
+
+- When object creation is more expensive than copying
+- When you need to create objects at runtime
+- When you want to avoid subclass proliferation
+- When you need to save object states (snapshots)
+- When objects have many configuration options
+
+---
+
+## When to Avoid Prototype?
+
+- When objects are simple and cheap to create
+- When deep cloning is complex and error-prone
+- When objects have many circular references
+- When built-in language features suffice
+
+---
+
+## Advanced: Prototype with Copy Constructor
+
+```typescript
+class Document {
+  title: string;
+  content: string;
+  metadata: Map<string, any>;
+  createdAt: Date;
+
+  constructor(title: string, content: string) {
+    this.title = title;
+    this.content = content;
+    this.metadata = new Map();
+    this.createdAt = new Date();
+  }
+
+  // Copy constructor
+  static fromPrototype(prototype: Document): Document {
+    const doc = new Document(prototype.title, prototype.content);
+    doc.metadata = new Map(prototype.metadata);
+    doc.createdAt = new Date(prototype.createdAt);
+    return doc;
+  }
+
+  clone(): Document {
+    return Document.fromPrototype(this);
+  }
+
+  addMetadata(key: string, value: any): void {
+    this.metadata.set(key, value);
+  }
+}
+
+// Usage
+const template = new Document("Template", "Template content");
+template.addMetadata("author", "System");
+
+const doc1 = template.clone();
+doc1.title = "Document 1";
+doc1.addMetadata("editor", "User 1");
+
+const doc2 = template.clone();
+doc2.title = "Document 2";
+doc2.addMetadata("editor", "User 2");
+```
+
+---
+
+## Handling Complex Cloning Scenarios
+
+```typescript
+class Node {
+  value: number;
+  next: Node | null = null;
+  visited: boolean = false;
+
+  constructor(value: number) {
+    this.value = value;
+  }
+
+  // Deep clone with circular reference handling
+  clone(visited: Map<Node, Node> = new Map()): Node {
+    // Check if already cloned
+    if (visited.has(this)) {
+      return visited.get(this)!;
+    }
+
+    // Create new node
+    const cloned = new Node(this.value);
+    visited.set(this, cloned);
+
+    // Clone next node if exists
+    if (this.next) {
+      cloned.next = this.next.clone(visited);
+    }
+
+    return cloned;
+  }
+}
+
+// Usage with circular reference
+const node1 = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+
+node1.next = node2;
+node2.next = node3;
+node3.next = node1; // Circular reference
+
+const clonedNode1 = node1.clone();
+// Successfully clones the entire circular structure
+```
+
+---
+
+:::tip[Ready to Implement?]
+Look for objects in your codebase that are expensive to create or need to be duplicated frequently. Implement Prototype pattern to improve performance and reduce initialization overhead!
+:::

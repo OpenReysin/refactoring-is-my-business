@@ -1,0 +1,902 @@
+---
+title: "Builder - A Design Pattern for Complex Object Construction"
+description: "Master the Builder pattern for constructing complex objects step by step in TypeScript, Vue.js, Java, PHP, and Rust."
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+The **Builder** is a **creational design pattern** that lets you construct complex objects step by step. It allows you to produce different types and representations of an object using the same construction code, separating construction from representation.
+
+---
+
+## What is the Builder Pattern?
+
+The Builder pattern separates the construction of a complex object from its representation, allowing the same construction process to create different representations. It's especially useful when an object has many optional parameters or requires multiple steps to create.
+
+---
+
+## Why Use a Builder?
+
+### Common Use Cases
+<CardGrid>
+    <Card title="Complex Configuration" icon="settings">
+        Build objects with many optional parameters (HTTP clients, database configs).
+    </Card>
+    <Card title="Document Generation" icon="document">
+        Construct complex documents with multiple sections and formatting.
+    </Card>
+    <Card title="Query Builders" icon="magnifier">
+        Build complex database queries step by step.
+    </Card>
+    <Card title="UI Component Trees" icon="puzzle">
+        Construct complex nested UI components hierarchically.
+    </Card>
+</CardGrid>
+
+### Advantages and Disadvantages
+| Advantages ✅ | Disadvantages ❌ |
+|--------------|----------------|
+| Avoids telescoping constructors. | Increases overall code complexity. |
+| Creates objects step by step. | Requires creating multiple builder classes. |
+| Reuses construction code for different representations. | Can be overkill for simple objects. |
+| Follows Single Responsibility Principle. | More code to maintain. |
+
+---
+
+## Structure of Builder
+
+The pattern consists of four main components:
+
+1. **Product**: The complex object being built
+2. **Builder Interface**: Declares construction steps common to all builders
+3. **Concrete Builders**: Provide different implementations of construction steps
+4. **Director** (Optional): Defines the order of construction steps
+
+---
+
+## Examples in Different Languages
+
+<Tabs>
+    <TabItem label="TypeScript">
+        ```typescript
+        // Product
+        class House {
+        walls?: number;
+        doors?: number;
+        windows?: number;
+        roof?: string;
+        garage?: boolean;
+        garden?: boolean;
+
+        describe(): string {
+        return `House with ${this.walls} walls, ${this.doors} doors, ` +
+        `${this.windows} windows, ${this.roof} roof` +
+        `${this.garage ? ', garage' : ''}${this.garden ? ', garden' : ''}`;
+    }
+    }
+
+        // Builder Interface
+        interface HouseBuilder {
+        reset(): void;
+        setWalls(count: number): this;
+        setDoors(count: number): this;
+        setWindows(count: number): this;
+        setRoof(type: string): this;
+        setGarage(hasGarage: boolean): this;
+        setGarden(hasGarden: boolean): this;
+        build(): House;
+    }
+
+        // Concrete Builder
+        class ConcreteHouseBuilder implements HouseBuilder {
+        private house: House;
+
+        constructor() {
+        this.house = new House();
+    }
+
+        reset(): void {
+        this.house = new House();
+    }
+
+        setWalls(count: number): this {
+        this.house.walls = count;
+        return this;
+    }
+
+        setDoors(count: number): this {
+        this.house.doors = count;
+        return this;
+    }
+
+        setWindows(count: number): this {
+        this.house.windows = count;
+        return this;
+    }
+
+        setRoof(type: string): this {
+        this.house.roof = type;
+        return this;
+    }
+
+        setGarage(hasGarage: boolean): this {
+        this.house.garage = hasGarage;
+        return this;
+    }
+
+        setGarden(hasGarden: boolean): this {
+        this.house.garden = hasGarden;
+        return this;
+    }
+
+        build(): House {
+        const result = this.house;
+        this.reset();
+        return result;
+    }
+    }
+
+        // Director (Optional)
+        class HouseDirector {
+        constructor(private builder: HouseBuilder) {}
+
+        buildMinimalHouse(): House {
+        return this.builder
+        .setWalls(4)
+        .setDoors(1)
+        .setWindows(2)
+        .setRoof("flat")
+        .build();
+    }
+
+        buildLuxuryHouse(): House {
+        return this.builder
+        .setWalls(4)
+        .setDoors(3)
+        .setWindows(10)
+        .setRoof("pitched")
+        .setGarage(true)
+        .setGarden(true)
+        .build();
+    }
+    }
+
+        // Usage
+        const builder = new ConcreteHouseBuilder();
+
+        // Direct building
+        const customHouse = builder
+        .setWalls(4)
+        .setDoors(2)
+        .setWindows(6)
+        .setRoof("pitched")
+        .setGarden(true)
+        .build();
+
+        console.log(customHouse.describe());
+
+        // Using director
+        const director = new HouseDirector(builder);
+        const minimalHouse = director.buildMinimalHouse();
+        const luxuryHouse = director.buildLuxuryHouse();
+        ```
+    </TabItem>
+
+    <TabItem label="Java">
+        ```java
+        // Product
+        class House {
+        private int walls;
+        private int doors;
+        private int windows;
+        private String roof;
+        private boolean garage;
+        private boolean garden;
+
+        public String describe() {
+        return String.format("House with %d walls, %d doors, %d windows, %s roof%s%s",
+        walls, doors, windows, roof,
+        garage ? ", garage" : "",
+        garden ? ", garden" : "");
+    }
+
+        // Setters
+        public void setWalls(int walls) { this.walls = walls; }
+        public void setDoors(int doors) { this.doors = doors; }
+        public void setWindows(int windows) { this.windows = windows; }
+        public void setRoof(String roof) { this.roof = roof; }
+        public void setGarage(boolean garage) { this.garage = garage; }
+        public void setGarden(boolean garden) { this.garden = garden; }
+    }
+
+        // Builder
+        class HouseBuilder {
+        private House house;
+
+        public HouseBuilder() {
+        this.house = new House();
+    }
+
+        public HouseBuilder setWalls(int count) {
+        house.setWalls(count);
+        return this;
+    }
+
+        public HouseBuilder setDoors(int count) {
+        house.setDoors(count);
+        return this;
+    }
+
+        public HouseBuilder setWindows(int count) {
+        house.setWindows(count);
+        return this;
+    }
+
+        public HouseBuilder setRoof(String type) {
+        house.setRoof(type);
+        return this;
+    }
+
+        public HouseBuilder setGarage(boolean hasGarage) {
+        house.setGarage(hasGarage);
+        return this;
+    }
+
+        public HouseBuilder setGarden(boolean hasGarden) {
+        house.setGarden(hasGarden);
+        return this;
+    }
+
+        public House build() {
+        House result = this.house;
+        this.house = new House();
+        return result;
+    }
+    }
+
+        // Usage
+        House house = new HouseBuilder()
+        .setWalls(4)
+        .setDoors(2)
+        .setWindows(6)
+        .setRoof("pitched")
+        .setGarden(true)
+        .build();
+
+        System.out.println(house.describe());
+        ```
+    </TabItem>
+
+    <TabItem label="PHP">
+        ```php
+        // Product
+        class House {
+        private $walls;
+        private $doors;
+        private $windows;
+        private $roof;
+        private $garage = false;
+        private $garden = false;
+
+        public function describe(): string {
+        return sprintf(
+        "House with %d walls, %d doors, %d windows, %s roof%s%s",
+        $this->walls, $this->doors, $this->windows, $this->roof,
+        $this->garage ? ", garage" : "",
+        $this->garden ? ", garden" : ""
+        );
+    }
+
+        // Setters
+        public function setWalls(int $walls): void { $this->walls = $walls; }
+        public function setDoors(int $doors): void { $this->doors = $doors; }
+        public function setWindows(int $windows): void { $this->windows = $windows; }
+        public function setRoof(string $roof): void { $this->roof = $roof; }
+        public function setGarage(bool $garage): void { $this->garage = $garage; }
+        public function setGarden(bool $garden): void { $this->garden = $garden; }
+    }
+
+        // Builder
+        class HouseBuilder {
+        private $house;
+
+        public function __construct() {
+        $this->house = new House();
+    }
+
+        public function setWalls(int $count): self {
+        $this->house->setWalls($count);
+        return $this;
+    }
+
+        public function setDoors(int $count): self {
+        $this->house->setDoors($count);
+        return $this;
+    }
+
+        public function setWindows(int $count): self {
+        $this->house->setWindows($count);
+        return $this;
+    }
+
+        public function setRoof(string $type): self {
+        $this->house->setRoof($type);
+        return $this;
+    }
+
+        public function setGarage(bool $hasGarage): self {
+        $this->house->setGarage($hasGarage);
+        return $this;
+    }
+
+        public function setGarden(bool $hasGarden): self {
+        $this->house->setGarden($hasGarden);
+        return $this;
+    }
+
+        public function build(): House {
+        $result = $this->house;
+        $this->house = new House();
+        return $result;
+    }
+    }
+
+        // Usage
+        $house = (new HouseBuilder())
+        ->setWalls(4)
+        ->setDoors(2)
+        ->setWindows(6)
+        ->setRoof("pitched")
+        ->setGarden(true)
+        ->build();
+
+        echo $house->describe();
+        ```
+    </TabItem>
+
+    <TabItem label="Rust">
+        ```rust
+        // Product
+        #[derive(Default, Debug)]
+        struct House {
+        walls: u32,
+        doors: u32,
+        windows: u32,
+        roof: String,
+        garage: bool,
+        garden: bool,
+    }
+
+        impl House {
+        fn describe(&self) -> String {
+        format!(
+        "House with {} walls, {} doors, {} windows, {} roof{}{}",
+        self.walls, self.doors, self.windows, self.roof,
+        if self.garage { ", garage" } else { "" },
+        if self.garden { ", garden" } else { "" }
+        )
+    }
+    }
+
+        // Builder
+        #[derive(Default)]
+        struct HouseBuilder {
+        house: House,
+    }
+
+        impl HouseBuilder {
+        fn new() -> Self {
+        Self::default()
+    }
+
+        fn walls(mut self, count: u32) -> Self {
+        self.house.walls = count;
+        self
+    }
+
+        fn doors(mut self, count: u32) -> Self {
+        self.house.doors = count;
+        self
+    }
+
+        fn windows(mut self, count: u32) -> Self {
+        self.house.windows = count;
+        self
+    }
+
+        fn roof(mut self, roof_type: &str) -> Self {
+        self.house.roof = roof_type.to_string();
+        self
+    }
+
+        fn garage(mut self, has_garage: bool) -> Self {
+        self.house.garage = has_garage;
+        self
+    }
+
+        fn garden(mut self, has_garden: bool) -> Self {
+        self.house.garden = has_garden;
+        self
+    }
+
+        fn build(self) -> House {
+        self.house
+    }
+    }
+
+        // Usage
+        fn main() {
+        let house = HouseBuilder::new()
+        .walls(4)
+        .doors(2)
+        .windows(6)
+        .roof("pitched")
+        .garden(true)
+        .build();
+
+        println!("{}", house.describe());
+    }
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Example in Vue.js
+
+### Builder for Form Configuration
+```typescript
+// FormBuilder.ts
+interface FormField {
+  name: string;
+  type: string;
+  label: string;
+  required: boolean;
+  validation?: string;
+}
+
+interface FormConfig {
+  fields: FormField[];
+  submitUrl: string;
+  method: string;
+  showLabels: boolean;
+  submitText: string;
+}
+
+class FormBuilder {
+  private config: FormConfig;
+
+  constructor() {
+    this.config = {
+      fields: [],
+      submitUrl: '',
+      method: 'POST',
+      showLabels: true,
+      submitText: 'Submit'
+    };
+  }
+
+  addTextField(name: string, label: string, required = false): this {
+    this.config.fields.push({
+      name,
+      type: 'text',
+      label,
+      required
+    });
+    return this;
+  }
+
+  addEmailField(name: string, label: string, required = false): this {
+    this.config.fields.push({
+      name,
+      type: 'email',
+      label,
+      required,
+      validation: 'email'
+    });
+    return this;
+  }
+
+  addPasswordField(name: string, label: string, required = false): this {
+    this.config.fields.push({
+      name,
+      type: 'password',
+      label,
+      required
+    });
+    return this;
+  }
+
+  setSubmitUrl(url: string): this {
+    this.config.submitUrl = url;
+    return this;
+  }
+
+  setMethod(method: 'GET' | 'POST' | 'PUT' | 'DELETE'): this {
+    this.config.method = method;
+    return this;
+  }
+
+  hideLabels(): this {
+    this.config.showLabels = false;
+    return this;
+  }
+
+  setSubmitText(text: string): this {
+    this.config.submitText = text;
+    return this;
+  }
+
+  build(): FormConfig {
+    const result = { ...this.config };
+    this.config = {
+      fields: [],
+      submitUrl: '',
+      method: 'POST',
+      showLabels: true,
+      submitText: 'Submit'
+    };
+    return result;
+  }
+}
+
+export { FormBuilder, FormConfig };
+```
+
+### Usage in Vue Component
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { FormBuilder } from './FormBuilder';
+
+const formConfig = ref(
+  new FormBuilder()
+    .addTextField('username', 'Username', true)
+    .addEmailField('email', 'Email Address', true)
+    .addPasswordField('password', 'Password', true)
+    .setSubmitUrl('/api/register')
+    .setSubmitText('Create Account')
+    .build()
+);
+</script>
+
+<template>
+  <form :action="formConfig.submitUrl" :method="formConfig.method">
+    <div v-for="field in formConfig.fields" :key="field.name">
+      <label v-if="formConfig.showLabels">{{ field.label }}</label>
+      <input
+        :type="field.type"
+        :name="field.name"
+        :required="field.required"
+      />
+    </div>
+    <button type="submit">{{ formConfig.submitText }}</button>
+  </form>
+</template>
+```
+
+---
+
+## Real-World Example: Query Builder
+
+<Tabs>
+    <TabItem label="SQL Query Builder">
+        ```typescript
+        class SQLQuery {
+        select: string[] = [];
+        from: string = '';
+        where: string[] = [];
+        orderBy: string[] = [];
+        limit?: number;
+        offset?: number;
+
+        toString(): string {
+        let query = `SELECT ${this.select.join(', ')} FROM ${this.from}`;
+
+        if (this.where.length > 0) {
+        query += ` WHERE ${this.where.join(' AND ')}`;
+    }
+
+        if (this.orderBy.length > 0) {
+        query += ` ORDER BY ${this.orderBy.join(', ')}`;
+    }
+
+        if (this.limit) {
+        query += ` LIMIT ${this.limit}`;
+    }
+
+        if (this.offset) {
+        query += ` OFFSET ${this.offset}`;
+    }
+
+        return query;
+    }
+    }
+
+        class QueryBuilder {
+        private query: SQLQuery;
+
+        constructor() {
+        this.query = new SQLQuery();
+    }
+
+        select(...columns: string[]): this {
+        this.query.select.push(...columns);
+        return this;
+    }
+
+        from(table: string): this {
+        this.query.from = table;
+        return this;
+    }
+
+        where(condition: string): this {
+        this.query.where.push(condition);
+        return this;
+    }
+
+        orderBy(column: string, direction: 'ASC' | 'DESC' = 'ASC'): this {
+        this.query.orderBy.push(`${column} ${direction}`);
+        return this;
+    }
+
+        limit(count: number): this {
+        this.query.limit = count;
+        return this;
+    }
+
+        offset(count: number): this {
+        this.query.offset = count;
+        return this;
+    }
+
+        build(): SQLQuery {
+        const result = this.query;
+        this.query = new SQLQuery();
+        return result;
+    }
+
+        execute(): string {
+        return this.build().toString();
+    }
+    }
+
+        // Usage
+        const query = new QueryBuilder()
+        .select('id', 'name', 'email')
+        .from('users')
+        .where('age > 18')
+        .where('status = "active"')
+        .orderBy('created_at', 'DESC')
+        .limit(10)
+        .offset(0)
+        .execute();
+
+        console.log(query);
+        // SELECT id, name, email FROM users WHERE age > 18 AND status = "active"
+        // ORDER BY created_at DESC LIMIT 10 OFFSET 0
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Real-World Example: HTTP Request Builder
+
+<Tabs>
+    <TabItem label="Request Builder">
+        ```typescript
+        interface RequestConfig {
+        url: string;
+        method: string;
+        headers: Record<string, string>;
+        body?: any;
+        timeout?: number;
+        auth?: { username: string; password: string };
+    }
+
+        class RequestBuilder {
+        private config: RequestConfig;
+
+        constructor(url: string) {
+        this.config = {
+        url,
+        method: 'GET',
+        headers: {}
+    };
+    }
+
+        method(method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'): this {
+        this.config.method = method;
+        return this;
+    }
+
+        header(key: string, value: string): this {
+        this.config.headers[key] = value;
+        return this;
+    }
+
+        headers(headers: Record<string, string>): this {
+        this.config.headers = { ...this.config.headers, ...headers };
+        return this;
+    }
+
+        json(data: any): this {
+        this.config.body = JSON.stringify(data);
+        this.header('Content-Type', 'application/json');
+        return this;
+    }
+
+        timeout(ms: number): this {
+        this.config.timeout = ms;
+        return this;
+    }
+
+        auth(username: string, password: string): this {
+        this.config.auth = { username, password };
+        const credentials = btoa(`${username}:${password}`);
+        this.header('Authorization', `Basic ${credentials}`);
+        return this;
+    }
+
+        bearer(token: string): this {
+        this.header('Authorization', `Bearer ${token}`);
+        return this;
+    }
+
+        build(): RequestConfig {
+        return { ...this.config };
+    }
+
+        async send(): Promise<Response> {
+        const config = this.build();
+        const options: RequestInit = {
+        method: config.method,
+        headers: config.headers,
+        body: config.body
+    };
+
+        if (config.timeout) {
+        const controller = new AbortController();
+        options.signal = controller.signal;
+        setTimeout(() => controller.abort(), config.timeout);
+    }
+
+        return fetch(config.url, options);
+    }
+    }
+
+        // Usage
+        const response = await new RequestBuilder('https://api.example.com/users')
+        .method('POST')
+        .bearer('your-token-here')
+        .json({ name: 'John Doe', email: 'john@example.com' })
+        .timeout(5000)
+        .send();
+
+        const data = await response.json();
+        console.log(data);
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Getting Started with Builder
+
+<Steps>
+    1. **Identify Complex Object**
+    Find an object with many parameters or complex construction logic.
+    2. **Extract Construction Steps**
+    Break down the construction process into clear, distinct steps.
+    3. **Create Builder Class**
+    Implement a builder with methods for each construction step.
+    4. **Implement Fluent Interface**
+    Make each method return `this` for method chaining.
+    5. **Add Build Method**
+    Create a final method that returns the constructed object.
+    6. **Optional: Add Director**
+    Create a director class for common construction sequences.
+</Steps>
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Use Fluent Interface" icon="approve-check">
+        Return `this` from builder methods to enable method chaining.
+    </Card>
+    <Card title="Validate Before Build" icon="warning">
+        Check that all required fields are set in the build() method.
+    </Card>
+    <Card title="Reset After Build" icon="refresh">
+        Reset the builder state after calling build() to avoid reuse issues.
+    </Card>
+    <Card title="Provide Defaults" icon="star">
+        Set sensible default values for optional parameters.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Not Resetting Builder]
+Always reset the builder after build() to prevent state pollution between builds.
+    :::
+
+:::caution[Missing Validation]
+Validate required fields in build() to catch configuration errors early.
+    :::
+
+:::caution[Overusing Builder]
+Don't use Builder for simple objects with few parameters - use constructors instead.
+    :::
+
+---
+
+## Builder Pattern Variations
+
+### Telescoping Constructor Problem
+    ```typescript
+// Bad: Telescoping constructors
+class Pizza {
+  constructor(
+    size: string,
+    cheese: boolean,
+    pepperoni: boolean,
+    bacon: boolean,
+    mushrooms: boolean,
+    olives: boolean
+  ) { }
+}
+
+// Good: Builder pattern
+class PizzaBuilder {
+  private pizza = {
+    size: 'medium',
+    toppings: [] as string[]
+  };
+
+  size(size: string): this {
+    this.pizza.size = size;
+    return this;
+  }
+
+  addTopping(topping: string): this {
+    this.pizza.toppings.push(topping);
+    return this;
+  }
+
+  build() {
+    return { ...this.pizza };
+  }
+}
+```
+
+---
+
+## When to Use Builder?
+
+- When an object has many optional parameters
+- When you want to create different representations of an object
+- When construction requires multiple steps
+- When you want to avoid telescoping constructors
+- When object construction is complex
+
+---
+
+## When to Avoid Builder?
+
+- For simple objects with few parameters
+- When object construction is straightforward
+- When immutability is not required
+- When a simple factory or constructor suffices
+
+---
+
+:::tip[Ready to Implement?]
+Look for constructors with many parameters or complex initialization logic. Refactor them using Builder pattern for cleaner, more maintainable code!
+    :::

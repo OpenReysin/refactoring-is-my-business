@@ -1,0 +1,486 @@
+---
+title: "Factory Method - A Design Pattern for Object Creation"
+description: "Master the Factory Method pattern, its use cases, implementation strategies in TypeScript, Vue.js, Java, PHP, and Rust."
+---
+import {Tabs, TabItem} from '@astrojs/starlight/components';
+import {Card, CardGrid} from '@astrojs/starlight/components';
+import {Steps} from '@astrojs/starlight/components';
+
+The **Factory Method** is a **creational design pattern** that provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created. It promotes loose coupling by eliminating the need to bind application-specific classes into the code.
+
+---
+
+## What is the Factory Method Pattern?
+
+The Factory Method pattern defines an interface for creating an object, but lets subclasses decide which class to instantiate. It lets a class defer instantiation to subclasses, enabling greater flexibility in determining which objects need to be created.
+
+---
+
+## Why Use a Factory Method?
+
+### Common Use Cases
+<CardGrid>
+    <Card title="UI Component Libraries" icon="puzzle">
+        Create different UI components based on platform or theme.
+    </Card>
+    <Card title="Document Processing" icon="document">
+        Generate different document types (PDF, Word, HTML).
+    </Card>
+    <Card title="Payment Processing" icon="payment">
+        Handle different payment methods (Credit Card, PayPal, Crypto).
+    </Card>
+    <Card title="Notification Systems" icon="bell">
+        Send notifications via different channels (Email, SMS, Push).
+    </Card>
+</CardGrid>
+
+### Advantages and Disadvantages
+| Advantages ✅ | Disadvantages ❌ |
+|--------------|----------------|
+| Avoids tight coupling between creator and concrete products. | Can lead to many subclasses. |
+| Follows the Single Responsibility Principle. | Code can become more complex. |
+| Follows the Open/Closed Principle (open for extension). | May be overkill for simple cases. |
+| Easy to introduce new product types. | Requires understanding of inheritance. |
+
+---
+
+## Structure of Factory Method
+
+The pattern consists of four main components:
+
+1. **Product Interface**: Defines the interface of objects the factory method creates
+2. **Concrete Products**: Different implementations of the product interface
+3. **Creator**: Declares the factory method that returns product objects
+4. **Concrete Creators**: Override the factory method to return different product types
+
+---
+
+## Examples in Different Languages
+
+<Tabs>
+    <TabItem label="TypeScript">
+        ```typescript
+        // Product Interface
+        interface Transport {
+        deliver(): string;
+    }
+
+        // Concrete Products
+        class Truck implements Transport {
+        deliver(): string {
+        return "Delivering by land in a truck";
+    }
+    }
+
+        class Ship implements Transport {
+        deliver(): string {
+        return "Delivering by sea in a ship";
+    }
+    }
+
+        class Plane implements Transport {
+        deliver(): string {
+        return "Delivering by air in a plane";
+    }
+    }
+
+        // Creator
+        abstract class Logistics {
+        abstract createTransport(): Transport;
+
+        planDelivery(): string {
+        const transport = this.createTransport();
+        return transport.deliver();
+    }
+    }
+
+        // Concrete Creators
+        class RoadLogistics extends Logistics {
+        createTransport(): Transport {
+        return new Truck();
+    }
+    }
+
+        class SeaLogistics extends Logistics {
+        createTransport(): Transport {
+        return new Ship();
+    }
+    }
+
+        class AirLogistics extends Logistics {
+        createTransport(): Transport {
+        return new Plane();
+    }
+    }
+
+        // Usage
+        function clientCode(logistics: Logistics) {
+        console.log(logistics.planDelivery());
+    }
+
+        clientCode(new RoadLogistics()); // "Delivering by land in a truck"
+        clientCode(new SeaLogistics()); // "Delivering by sea in a ship"
+        clientCode(new AirLogistics()); // "Delivering by air in a plane"
+        ```
+    </TabItem>
+
+    <TabItem label="Java">
+        ```java
+        // Product Interface
+        interface Transport {
+        String deliver();
+    }
+
+        // Concrete Products
+        class Truck implements Transport {
+        public String deliver() {
+        return "Delivering by land in a truck";
+    }
+    }
+
+        class Ship implements Transport {
+        public String deliver() {
+        return "Delivering by sea in a ship";
+    }
+    }
+
+        // Creator
+        abstract class Logistics {
+        abstract Transport createTransport();
+
+        public String planDelivery() {
+        Transport transport = createTransport();
+        return transport.deliver();
+    }
+    }
+
+        // Concrete Creators
+        class RoadLogistics extends Logistics {
+        Transport createTransport() {
+        return new Truck();
+    }
+    }
+
+        class SeaLogistics extends Logistics {
+        Transport createTransport() {
+        return new Ship();
+    }
+    }
+
+        // Usage
+        Logistics logistics = new RoadLogistics();
+        System.out.println(logistics.planDelivery());
+        ```
+    </TabItem>
+
+    <TabItem label="PHP">
+        ```php
+        // Product Interface
+        interface Transport {
+        public function deliver(): string;
+    }
+
+        // Concrete Products
+        class Truck implements Transport {
+        public function deliver(): string {
+        return "Delivering by land in a truck";
+    }
+    }
+
+        class Ship implements Transport {
+        public function deliver(): string {
+        return "Delivering by sea in a ship";
+    }
+    }
+
+        // Creator
+        abstract class Logistics {
+        abstract public function createTransport(): Transport;
+
+        public function planDelivery(): string {
+        $transport = $this->createTransport();
+        return $transport->deliver();
+    }
+    }
+
+        // Concrete Creators
+        class RoadLogistics extends Logistics {
+        public function createTransport(): Transport {
+        return new Truck();
+    }
+    }
+
+        class SeaLogistics extends Logistics {
+        public function createTransport(): Transport {
+        return new Ship();
+    }
+    }
+
+        // Usage
+        $logistics = new RoadLogistics();
+        echo $logistics->planDelivery();
+        ```
+    </TabItem>
+
+    <TabItem label="Rust">
+        ```rust
+        // Product Trait
+        trait Transport {
+        fn deliver(&self) -> String;
+    }
+
+        // Concrete Products
+        struct Truck;
+        impl Transport for Truck {
+        fn deliver(&self) -> String {
+        "Delivering by land in a truck".to_string()
+    }
+    }
+
+        struct Ship;
+        impl Transport for Ship {
+        fn deliver(&self) -> String {
+        "Delivering by sea in a ship".to_string()
+    }
+    }
+
+        // Creator Trait
+        trait Logistics {
+        fn create_transport(&self) -> Box<dyn Transport>;
+
+        fn plan_delivery(&self) -> String {
+        let transport = self.create_transport();
+        transport.deliver()
+    }
+    }
+
+        // Concrete Creators
+        struct RoadLogistics;
+        impl Logistics for RoadLogistics {
+        fn create_transport(&self) -> Box<dyn Transport> {
+        Box::new(Truck)
+    }
+    }
+
+        struct SeaLogistics;
+        impl Logistics for SeaLogistics {
+        fn create_transport(&self) -> Box<dyn Transport> {
+        Box::new(Ship)
+    }
+    }
+
+        // Usage
+        fn main() {
+        let logistics: &dyn Logistics = &RoadLogistics;
+        println!("{}", logistics.plan_delivery());
+    }
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Example in Vue.js
+
+### Factory Method for UI Components
+    ```typescript
+// components/ButtonFactory.ts
+import { Component } from 'vue';
+import PrimaryButton from './PrimaryButton.vue';
+import SecondaryButton from './SecondaryButton.vue';
+import DangerButton from './DangerButton.vue';
+
+export type ButtonType = 'primary' | 'secondary' | 'danger';
+
+export class ButtonFactory {
+  static createButton(type: ButtonType): Component {
+    switch (type) {
+      case 'primary':
+        return PrimaryButton;
+      case 'secondary':
+        return SecondaryButton;
+      case 'danger':
+        return DangerButton;
+      default:
+        return PrimaryButton;
+    }
+  }
+}
+```
+
+### Usage in a Vue Component
+    ```vue
+<script setup lang="ts">
+import { computed } from 'vue';
+import { ButtonFactory, ButtonType } from './ButtonFactory';
+
+const props = defineProps<{
+  type: ButtonType;
+}>();
+
+const ButtonComponent = computed(() => ButtonFactory.createButton(props.type));
+</script>
+
+<template>
+  <component :is="ButtonComponent">
+    <slot />
+  </component>
+</template>
+```
+
+---
+
+## Real - World Example: Notification System
+
+<Tabs>
+    <TabItem label="TypeScript Implementation">
+        ```typescript
+        // Product Interface
+        interface Notification {
+        send(message: string, recipient: string): void;
+    }
+
+        // Concrete Products
+        class EmailNotification implements Notification {
+        send(message: string, recipient: string): void {
+        console.log(`Sending email to ${recipient}: ${message}`);
+    }
+    }
+
+        class SMSNotification implements Notification {
+        send(message: string, recipient: string): void {
+        console.log(`Sending SMS to ${recipient}: ${message}`);
+    }
+    }
+
+        class PushNotification implements Notification {
+        send(message: string, recipient: string): void {
+        console.log(`Sending push notification to ${recipient}: ${message}`);
+    }
+    }
+
+        // Creator
+        abstract class NotificationService {
+        abstract createNotification(): Notification;
+
+        notify(message: string, recipient: string): void {
+        const notification = this.createNotification();
+        notification.send(message, recipient);
+    }
+    }
+
+        // Concrete Creators
+        class EmailService extends NotificationService {
+        createNotification(): Notification {
+        return new EmailNotification();
+    }
+    }
+
+        class SMSService extends NotificationService {
+        createNotification(): Notification {
+        return new SMSNotification();
+    }
+    }
+
+        class PushService extends NotificationService {
+        createNotification(): Notification {
+        return new PushNotification();
+    }
+    }
+
+        // Usage
+        const emailService = new EmailService();
+        emailService.notify("Welcome!", "user@example.com");
+
+        const smsService = new SMSService();
+        smsService.notify("Your code is 1234", "+1234567890");
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Getting Started with Factory Method
+
+<Steps>
+    1. **Identify Common Interface**
+    Define a common interface that all products will implement.
+    2. **Create Concrete Products**
+    Implement different versions of the product interface.
+    3. **Define Creator Class**
+    Create an abstract creator class with a factory method.
+    4. **Implement Concrete Creators**
+    Create subclasses that override the factory method.
+    5. **Use Polymorphism**
+    Work with creators through their common interface.
+</Steps>
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Keep Products Simple" icon="approve-check">
+        Ensure all products implement the same interface consistently.
+    </Card>
+    <Card title="Use Meaningful Names" icon="pencil">
+        Name your factories and products clearly to indicate their purpose.
+    </Card>
+    <Card title="Consider Simple Factory First" icon="rocket">
+        For simple cases, a single factory class might be sufficient.
+    </Card>
+    <Card title="Document Dependencies" icon="open-book">
+        Clearly document what each concrete creator produces.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Overengineering]
+Don't use Factory Method for simple object creation. A simple constructor or function might suffice.
+    :::
+
+:::caution[Too Many Subclasses]
+Having too many concrete creators can make the code hard to maintain.Consider using parameters instead.
+    :::
+
+:::caution[Breaking Interface Consistency]
+All products must truly implement the same interface without special cases.
+    :::
+
+---
+
+## Factory Method vs Simple Factory
+
+| Factory Method | Simple Factory |
+| --------------- | ---------------- |
+| Uses inheritance and subclasses | Uses a single factory class |
+| More flexible and extensible | Simpler but less flexible |
+| Follows Open / Closed Principle | Violates Open / Closed Principle |
+| Better for complex hierarchies | Better for simple cases |
+
+---
+
+## When to Use Factory Method ?
+
+-When you don't know beforehand the exact types of objects your code will work with
+- When you want to provide a way to extend internal components
+- When you want to save system resources by reusing existing objects
+- When the creation process is complex or requires configuration
+
+---
+
+## When to Avoid Factory Method ?
+
+-When object creation is simple and straightforward
+- When you have only one product type
+- When the added complexity doesn't provide value
+- When a simple function or constructor would suffice
+
+---
+
+:::tip[Ready to Implement ?]
+Start by identifying objects in your codebase that have similar interfaces but different implementations.Refactor them to use Factory Method for better flexibility and maintainability!
+    :::

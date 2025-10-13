@@ -1,0 +1,628 @@
+---
+title: "Abstract Factory - A Design Pattern for Family Creation"
+description: "Learn the Abstract Factory pattern for creating families of related objects in TypeScript, Vue.js, Java, PHP, and Rust."
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+The **Abstract Factory** is a **creational design pattern** that provides an interface for creating families of related or dependent objects without specifying their concrete classes. It ensures that created objects are compatible with each other.
+
+---
+
+## What is the Abstract Factory Pattern?
+
+Abstract Factory is a super-factory that creates other factories. It provides a way to encapsulate a group of individual factories with a common theme without specifying their concrete classes, ensuring consistency among products.
+
+---
+
+## Why Use an Abstract Factory?
+
+### Common Use Cases
+<CardGrid>
+    <Card title="Cross-Platform UI" icon="laptop">
+        Create UI elements for different operating systems (Windows, Mac, Linux).
+    </Card>
+    <Card title="Theme Systems" icon="swatch">
+        Generate consistent UI components for different themes (Dark, Light).
+    </Card>
+    <Card title="Database Adapters" icon="database">
+        Create database-specific connection, query, and result objects.
+    </Card>
+    <Card title="Document Formats" icon="document">
+        Generate complete document sets in different formats (PDF, Word, HTML).
+    </Card>
+</CardGrid>
+
+### Advantages and Disadvantages
+| Advantages ✅ | Disadvantages ❌ |
+|--------------|----------------|
+| Ensures product compatibility. | Complex to implement and understand. |
+| Isolates concrete classes. | Difficult to support new product types. |
+| Promotes consistency among products. | Increases number of classes. |
+| Follows Single Responsibility Principle. | Can be overkill for simple scenarios. |
+
+---
+
+## Structure of Abstract Factory
+
+The pattern consists of five main components:
+
+1. **Abstract Products**: Interfaces for different types of products
+2. **Concrete Products**: Specific implementations of abstract products
+3. **Abstract Factory**: Interface for creating abstract products
+4. **Concrete Factories**: Implement creation methods for specific product families
+5. **Client**: Uses only abstract interfaces
+
+---
+
+## Examples in Different Languages
+
+<Tabs>
+    <TabItem label="TypeScript">
+        ```typescript
+        // Abstract Products
+        interface Button {
+        render(): string;
+        onClick(): void;
+    }
+
+        interface Checkbox {
+        render(): string;
+        toggle(): void;
+    }
+
+        // Concrete Products - Windows
+        class WindowsButton implements Button {
+        render(): string {
+        return "Rendering Windows button";
+    }
+        onClick(): void {
+        console.log("Windows button clicked");
+    }
+    }
+
+        class WindowsCheckbox implements Checkbox {
+        render(): string {
+        return "Rendering Windows checkbox";
+    }
+        toggle(): void {
+        console.log("Windows checkbox toggled");
+    }
+    }
+
+        // Concrete Products - Mac
+        class MacButton implements Button {
+        render(): string {
+        return "Rendering Mac button";
+    }
+        onClick(): void {
+        console.log("Mac button clicked");
+    }
+    }
+
+        class MacCheckbox implements Checkbox {
+        render(): string {
+        return "Rendering Mac checkbox";
+    }
+        toggle(): void {
+        console.log("Mac checkbox toggled");
+    }
+    }
+
+        // Abstract Factory
+        interface GUIFactory {
+        createButton(): Button;
+        createCheckbox(): Checkbox;
+    }
+
+        // Concrete Factories
+        class WindowsFactory implements GUIFactory {
+        createButton(): Button {
+        return new WindowsButton();
+    }
+        createCheckbox(): Checkbox {
+        return new WindowsCheckbox();
+    }
+    }
+
+        class MacFactory implements GUIFactory {
+        createButton(): Button {
+        return new MacButton();
+    }
+        createCheckbox(): Checkbox {
+        return new MacCheckbox();
+    }
+    }
+
+        // Client Code
+        class Application {
+        private button: Button;
+        private checkbox: Checkbox;
+
+        constructor(factory: GUIFactory) {
+        this.button = factory.createButton();
+        this.checkbox = factory.createCheckbox();
+    }
+
+        render(): void {
+        console.log(this.button.render());
+        console.log(this.checkbox.render());
+    }
+    }
+
+        // Usage
+        const os = "Windows"; // or "Mac"
+        const factory: GUIFactory = os === "Windows"
+        ? new WindowsFactory()
+        : new MacFactory();
+
+        const app = new Application(factory);
+        app.render();
+        ```
+    </TabItem>
+
+    <TabItem label="Java">
+        ```java
+        // Abstract Products
+        interface Button {
+        String render();
+        void onClick();
+    }
+
+        interface Checkbox {
+        String render();
+        void toggle();
+    }
+
+        // Concrete Products - Windows
+        class WindowsButton implements Button {
+        public String render() {
+        return "Rendering Windows button";
+    }
+        public void onClick() {
+        System.out.println("Windows button clicked");
+    }
+    }
+
+        class WindowsCheckbox implements Checkbox {
+        public String render() {
+        return "Rendering Windows checkbox";
+    }
+        public void toggle() {
+        System.out.println("Windows checkbox toggled");
+    }
+    }
+
+        // Abstract Factory
+        interface GUIFactory {
+        Button createButton();
+        Checkbox createCheckbox();
+    }
+
+        // Concrete Factory
+        class WindowsFactory implements GUIFactory {
+        public Button createButton() {
+        return new WindowsButton();
+    }
+        public Checkbox createCheckbox() {
+        return new WindowsCheckbox();
+    }
+    }
+
+        // Client
+        class Application {
+        private Button button;
+        private Checkbox checkbox;
+
+        public Application(GUIFactory factory) {
+        button = factory.createButton();
+        checkbox = factory.createCheckbox();
+    }
+
+        public void render() {
+        System.out.println(button.render());
+        System.out.println(checkbox.render());
+    }
+    }
+        ```
+    </TabItem>
+
+    <TabItem label="PHP">
+        ```php
+        // Abstract Products
+        interface Button {
+        public function render(): string;
+        public function onClick(): void;
+    }
+
+        interface Checkbox {
+        public function render(): string;
+        public function toggle(): void;
+    }
+
+        // Concrete Products
+        class WindowsButton implements Button {
+        public function render(): string {
+        return "Rendering Windows button";
+    }
+        public function onClick(): void {
+        echo "Windows button clicked\n";
+    }
+    }
+
+        class WindowsCheckbox implements Checkbox {
+        public function render(): string {
+        return "Rendering Windows checkbox";
+    }
+        public function toggle(): void {
+        echo "Windows checkbox toggled\n";
+    }
+    }
+
+        // Abstract Factory
+        interface GUIFactory {
+        public function createButton(): Button;
+        public function createCheckbox(): Checkbox;
+    }
+
+        // Concrete Factory
+        class WindowsFactory implements GUIFactory {
+        public function createButton(): Button {
+        return new WindowsButton();
+    }
+        public function createCheckbox(): Checkbox {
+        return new WindowsCheckbox();
+    }
+    }
+
+        // Usage
+        $factory = new WindowsFactory();
+        $button = $factory->createButton();
+        echo $button->render();
+        ```
+    </TabItem>
+
+    <TabItem label="Rust">
+        ```rust
+        // Abstract Products
+        trait Button {
+        fn render(&self) -> String;
+        fn on_click(&self);
+    }
+
+        trait Checkbox {
+        fn render(&self) -> String;
+        fn toggle(&self);
+    }
+
+        // Concrete Products
+        struct WindowsButton;
+        impl Button for WindowsButton {
+        fn render(&self) -> String {
+        "Rendering Windows button".to_string()
+    }
+        fn on_click(&self) {
+        println!("Windows button clicked");
+    }
+    }
+
+        struct WindowsCheckbox;
+        impl Checkbox for WindowsCheckbox {
+        fn render(&self) -> String {
+        "Rendering Windows checkbox".to_string()
+    }
+        fn toggle(&self) {
+        println!("Windows checkbox toggled");
+    }
+    }
+
+        // Abstract Factory
+        trait GUIFactory {
+        fn create_button(&self) -> Box<dyn Button>;
+        fn create_checkbox(&self) -> Box<dyn Checkbox>;
+    }
+
+        // Concrete Factory
+        struct WindowsFactory;
+        impl GUIFactory for WindowsFactory {
+        fn create_button(&self) -> Box<dyn Button> {
+        Box::new(WindowsButton)
+    }
+        fn create_checkbox(&self) -> Box<dyn Checkbox> {
+        Box::new(WindowsCheckbox)
+    }
+    }
+
+        // Usage
+        fn main() {
+        let factory: &dyn GUIFactory = &WindowsFactory;
+        let button = factory.create_button();
+        println!("{}", button.render());
+    }
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Example in Vue.js
+
+### Abstract Factory for Theme Components
+    ```typescript
+// types/theme.ts
+import { Component } from 'vue';
+
+export interface ThemeFactory {
+  createButton(): Component;
+  createCard(): Component;
+  createInput(): Component;
+}
+
+// factories/LightThemeFactory.ts
+import { ThemeFactory } from '../types/theme';
+import LightButton from '../components/light/LightButton.vue';
+import LightCard from '../components/light/LightCard.vue';
+import LightInput from '../components/light/LightInput.vue';
+
+export class LightThemeFactory implements ThemeFactory {
+  createButton() { return LightButton; }
+  createCard() { return LightCard; }
+  createInput() { return LightInput; }
+}
+
+// factories/DarkThemeFactory.ts
+import { ThemeFactory } from '../types/theme';
+import DarkButton from '../components/dark/DarkButton.vue';
+import DarkCard from '../components/dark/DarkCard.vue';
+import DarkInput from '../components/dark/DarkInput.vue';
+
+export class DarkThemeFactory implements ThemeFactory {
+  createButton() { return DarkButton; }
+  createCard() { return DarkCard; }
+  createInput() { return DarkInput; }
+}
+```
+
+### Usage in Vue
+    ```vue
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { LightThemeFactory } from './factories/LightThemeFactory';
+import { DarkThemeFactory } from './factories/DarkThemeFactory';
+
+const isDark = ref(false);
+
+const factory = computed(() =>
+  isDark.value ? new DarkThemeFactory() : new LightThemeFactory()
+);
+
+const ButtonComponent = computed(() => factory.value.createButton());
+const CardComponent = computed(() => factory.value.createCard());
+</script>
+
+<template>
+  <div>
+    <button @click="isDark = !isDark">Toggle Theme</button>
+    <component :is="ButtonComponent">Click Me</component>
+    <component :is="CardComponent">
+      <p>Card content</p>
+    </component>
+  </div>
+</template>
+```
+
+---
+
+## Real-World Example: Database Adapters
+
+<Tabs>
+    <TabItem label="Database Factory">
+        ```typescript
+        // Abstract Products
+        interface Connection {
+        connect(): void;
+        disconnect(): void;
+    }
+
+        interface Query {
+        execute(sql: string): void;
+    }
+
+        interface Result {
+        fetch(): any[];
+    }
+
+        // MySQL Products
+        class MySQLConnection implements Connection {
+        connect(): void {
+        console.log("Connecting to MySQL database");
+    }
+        disconnect(): void {
+        console.log("Disconnecting from MySQL");
+    }
+    }
+
+        class MySQLQuery implements Query {
+        execute(sql: string): void {
+        console.log(`Executing MySQL query: ${sql}`);
+    }
+    }
+
+        class MySQLResult implements Result {
+        fetch(): any[] {
+        return [{ id: 1, name: "MySQL Data" }];
+    }
+    }
+
+        // PostgreSQL Products
+        class PostgreSQLConnection implements Connection {
+        connect(): void {
+        console.log("Connecting to PostgreSQL database");
+    }
+        disconnect(): void {
+        console.log("Disconnecting from PostgreSQL");
+    }
+    }
+
+        class PostgreSQLQuery implements Query {
+        execute(sql: string): void {
+        console.log(`Executing PostgreSQL query: ${sql}`);
+    }
+    }
+
+        class PostgreSQLResult implements Result {
+        fetch(): any[] {
+        return [{ id: 1, name: "PostgreSQL Data" }];
+    }
+    }
+
+        // Abstract Factory
+        interface DatabaseFactory {
+        createConnection(): Connection;
+        createQuery(): Query;
+        createResult(): Result;
+    }
+
+        // Concrete Factories
+        class MySQLFactory implements DatabaseFactory {
+        createConnection(): Connection {
+        return new MySQLConnection();
+    }
+        createQuery(): Query {
+        return new MySQLQuery();
+    }
+        createResult(): Result {
+        return new MySQLResult();
+    }
+    }
+
+        class PostgreSQLFactory implements DatabaseFactory {
+        createConnection(): Connection {
+        return new PostgreSQLConnection();
+    }
+        createQuery(): Query {
+        return new PostgreSQLQuery();
+    }
+        createResult(): Result {
+        return new PostgreSQLResult();
+    }
+    }
+
+        // Client
+        class DatabaseService {
+        private connection: Connection;
+        private query: Query;
+
+        constructor(factory: DatabaseFactory) {
+        this.connection = factory.createConnection();
+        this.query = factory.createQuery();
+    }
+
+        executeQuery(sql: string): void {
+        this.connection.connect();
+        this.query.execute(sql);
+        this.connection.disconnect();
+    }
+    }
+
+        // Usage
+        const dbType = process.env.DB_TYPE || "mysql";
+        const factory = dbType === "mysql"
+        ? new MySQLFactory()
+        : new PostgreSQLFactory();
+
+        const dbService = new DatabaseService(factory);
+        dbService.executeQuery("SELECT * FROM users");
+        ```
+    </TabItem>
+</Tabs>
+
+---
+
+## Getting Started with Abstract Factory
+
+<Steps>
+    1. **Identify Product Families**
+    Determine related products that should be created together.
+    2. **Define Abstract Products**
+    Create interfaces for each product type in the family.
+    3. **Implement Concrete Products**
+    Create specific implementations for each family variant.
+    4. **Create Abstract Factory**
+    Define an interface with creation methods for each product.
+    5. **Implement Concrete Factories**
+    Create a factory for each product family variant.
+    6. **Update Client Code**
+    Ensure clients work with abstract interfaces only.
+</Steps>
+
+---
+
+## Best Practices
+
+<CardGrid>
+    <Card title="Ensure Compatibility" icon="approve-check">
+        All products from a factory must be compatible with each other.
+    </Card>
+    <Card title="Use Dependency Injection" icon="puzzle">
+        Pass factories to clients through constructors or parameters.
+    </Card>
+    <Card title="Keep Families Cohesive" icon="star">
+        Products in a family should have a strong relationship.
+    </Card>
+    <Card title="Document Families" icon="open-book">
+        Clearly document which products belong to which family.
+    </Card>
+</CardGrid>
+
+---
+
+## Common Mistakes to Avoid
+
+:::caution[Adding New Products]
+Adding a new product type requires changing all factory interfaces and implementations.
+    :::
+
+:::caution[Over-Abstraction]
+Don't use Abstract Factory when you only have one product family or simple creation needs.
+    :::
+
+:::caution[Breaking Family Consistency]
+Mixing products from different families can lead to incompatibility issues.
+    :::
+
+---
+
+## Abstract Factory vs Factory Method
+
+| Abstract Factory | Factory Method |
+|-----------------|----------------|
+| Creates families of related objects | Creates one type of object |
+| Uses composition | Uses inheritance |
+| Factory is an object | Factory is a method |
+| Multiple product types | Single product type |
+
+---
+
+## When to Use Abstract Factory?
+
+- When your code needs to work with various families of related products
+- When you want to enforce constraints on product combinations
+- When you want to provide a library of products revealing only interfaces
+- When product families need to be independent
+
+---
+
+## When to Avoid Abstract Factory?
+
+- When you only have one product family
+- When product creation is simple
+- When flexibility to add new product types is important
+- When the added complexity doesn't provide value
+
+---
+
+:::tip[Ready to Implement?]
+Identify related objects in your system that should be created together. Group them into families and implement Abstract Factory to ensure consistency and compatibility!
+    :::
