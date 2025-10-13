@@ -2,11 +2,11 @@
 
 import starlight from "@astrojs/starlight";
 import {defineConfig} from "astro/config";
-import starlightThemeRapide from "starlight-theme-rapide";
 import starlightAutoSidebar from 'starlight-auto-sidebar'
 import starlightGiscus from 'starlight-giscus'
 import starlightLinksValidator from 'starlight-links-validator'
 import starlightSidebarTopics from 'starlight-sidebar-topics'
+import starlightThemeRapide from "starlight-theme-rapide";
 
 // https://astro.build/config
 export default defineConfig({
@@ -16,7 +16,6 @@ export default defineConfig({
     integrations: [starlight({
         plugins: [
             starlightThemeRapide(),
-            starlightAutoSidebar(),
             starlightGiscus({
                 repo: 'OpenReysin/refactoring-is-my-business',
                 repoId: 'R_kgDOP2xpFw',
@@ -24,9 +23,10 @@ export default defineConfig({
                 categoryId: 'DIC_kwDOP2xpF84CwlCT',
                 mapping: 'pathname',
                 lazy: true,
-                reactions: true
+                reactions: true,
             }),
             starlightLinksValidator(),
+            starlightAutoSidebar(),
             starlightSidebarTopics([
                 {
                     label: 'Guides',
@@ -122,7 +122,6 @@ export default defineConfig({
                 href: "https://github.com/OpenReysin/refactoring-is-my-business",
             },
         ],
-
         components: {
             TableOfContents: './src/components/CustomTableOfContents.astro',
             Pagination: './src/components/CustomPagination.astro',
