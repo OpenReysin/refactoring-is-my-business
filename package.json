@@ -15,6 +15,7 @@
 		"@astrojs/starlight": "^0.36.0",
 		"astro": "^5.6.1",
 		"sharp": "^0.34.2",
+		"starlight-auto-sidebar": "^0.1.2",
 		"starlight-contributor-list": "^0.3.0",
 		"starlight-theme-rapide": "^0.5.1"
 	},

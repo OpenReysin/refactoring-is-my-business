@@ -17,6 +17,9 @@ importers:
       sharp:
         specifier: ^0.34.2
         version: 0.34.4
+      starlight-auto-sidebar:
+        specifier: ^0.1.2
+        version: 0.1.2(@astrojs/starlight@0.36.0(astro@5.14.0(@types/node@24.5.2)(rollup@4.52.2)(typescript@5.9.2)))
       starlight-contributor-list:
         specifier: ^0.3.0
         version: 0.3.0(@astrojs/starlight@0.36.0(astro@5.14.0(@types/node@24.5.2)(rollup@4.52.2)(typescript@5.9.2)))
@@ -1630,6 +1633,12 @@ packages:
 
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
+
+  starlight-auto-sidebar@0.1.2:
+    resolution: {integrity: sha512-7wxR9r/dMGl0ISjO7LxmSQHFdUN/UdiEDWQ+ehv5AL8udEYgItZIvPrUWv5tAg4EF5Okj451mRp8s1bU9f6fmA==}
+    engines: {node: '>=18.17.1'}
+    peerDependencies:
+      '@astrojs/starlight': '>=0.32.0'
 
   starlight-contributor-list@0.3.0:
     resolution: {integrity: sha512-mkSQKRQGe0jSRWvXSo1TPvtwhCyRESLXIcnw+ruCKVql0gdguB9hfEuz8LlBtmvK3GfZLmwyH8XML1o2trRweg==}
@@ -4106,6 +4115,11 @@ snapshots:
   source-map@0.7.6: {}
 
   space-separated-tokens@2.0.2: {}
+
+  starlight-auto-sidebar@0.1.2(@astrojs/starlight@0.36.0(astro@5.14.0(@types/node@24.5.2)(rollup@4.52.2)(typescript@5.9.2))):
+    dependencies:
+      '@astrojs/starlight': 0.36.0(astro@5.14.0(@types/node@24.5.2)(rollup@4.52.2)(typescript@5.9.2))
+      github-slugger: 2.0.0
 
   starlight-contributor-list@0.3.0(@astrojs/starlight@0.36.0(astro@5.14.0(@types/node@24.5.2)(rollup@4.52.2)(typescript@5.9.2))):
     dependencies:
